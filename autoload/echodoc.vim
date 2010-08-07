@@ -73,7 +73,7 @@ endfunction"}}}
 
 " Misc.
 function! s:compare(a1, a2)  "{{{
-  return a1.rank - a2.rank
+  return a:a1.rank - a:a2.rank
 endfunction"}}}
 function! s:get_cur_text()  "{{{
   let l:pos = mode() ==# 'i' ? 2 : 1
@@ -108,7 +108,7 @@ function! s:on_cursor_moved()  "{{{
         endfor
         
         let l:echo_cnt += 1
-        if l:echo_cnt > &cmdheight
+        if l:echo_cnt >= &cmdheight
           break
         endif
       endif
