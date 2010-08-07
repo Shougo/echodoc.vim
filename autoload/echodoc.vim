@@ -29,27 +29,6 @@
 let s:echodoc_dicts = []
 "}}}
 
-" Helper functions."{{{
-function! unite#get_unite_candidates()"{{{
-  return s:unite.candidates
-endfunction"}}}
-function! unite#available_sources(...)"{{{
-  return a:0 == 0 ? s:unite.sources_dict : s:unite.sources_dict[a:1]
-endfunction"}}}
-function! unite#escape_match(str)"{{{
-  return escape(a:str, '~" \.^$[]')
-endfunction"}}}
-function! unite#complete_source(arglead, cmdline, cursorpos)"{{{
-  return filter(map(split(globpath(&runtimepath, 'autoload/unite/sources/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
-        \ , printf('v:val =~ "^%s"', a:arglead))
-endfunction"}}}
-function! unite#set_default(var, val)  "{{{
-  if !exists(a:var) || type({a:var}) != type(a:val)
-    let {a:var} = a:val
-  endif
-endfunction"}}}
-"}}}
-
 function! echodoc#enable()"{{{
   augroup echodoc
     autocmd!
