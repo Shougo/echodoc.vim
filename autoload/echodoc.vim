@@ -55,12 +55,8 @@ function! s:compare(a1, a2)  "{{{
   return a:a1.rank - a:a2.rank
 endfunction"}}}
 function! s:get_cur_text()  "{{{
-  let l:cur_text = col('.') < 1 ? '' : matchstr(getline('.'), '.*')[: col('.') - 1]
-
-  if mode() !=# 'i'
-    let l:pattern = s:neocomplcache_enabled() ? '^\%('.neocomplcache#get_next_keyword_pattern().'\m\)' : '\k\+'
-    let l:cur_text .= matchstr('a'.getline('.')[col('.') :], l:pattern)[1:]
-  endif
+  let l:pos = mode() ==# 'i' ? 2 : 1
+  let l:cur_text = col('.') < l:pos ? '' : matchstr(getline('.'), '.*')[: col('.') - l:pos]
 
   return substitute(l:cur_text, '\h\w*$', '', '')
 endfunction"}}}
