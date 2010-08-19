@@ -78,6 +78,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2010-08-19
+- Improved cur_text.
+
 2010-08-08
 - Improved cur_text.
 
