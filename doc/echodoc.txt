@@ -38,6 +38,8 @@ Changelog		|echodoc-changelog|
 ==============================================================================
 INTRODUCTION					*echodoc-introduction*
 
+*echodoc* displays information in echo area from echodoc plugin.
+
 ==============================================================================
 USAGE						*echodoc-usage*
 
@@ -61,13 +63,13 @@ VARIABLES 					*echodoc-variables*
 
 g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
 		If this variable's value is 1, enable echodoc at startup.
+		
+		Default value is 0.
 
 ==============================================================================
 EXAMPLES					*echodoc-examples*
 >
-	
-	
-	
+	let g:echodoc_enable_at_startup = 1
 >
 ==============================================================================
 TODO						*echodoc-todo*
@@ -77,6 +79,9 @@ BUGS						*echodoc-bugs*
 
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
+
+2010-12-24
+- Improved documentation.
 
 2010-11-07
 - Improved modeline.
