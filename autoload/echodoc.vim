@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 22 Aug 2010
+" Last Modified: 12 Jan 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -36,11 +36,14 @@ function! echodoc#enable()"{{{
   augroup END
 endfunction"}}}
 function! echodoc#disable()"{{{
+  augroup echodoc
+    autocmd!
+  augroup END
 endfunction"}}}
 function! echodoc#register(name, dict)"{{{
   " Unregister previous dict.
   call echodoc#unregister(a:name)
-  
+
   call add(s:echodoc_dicts, a:dict)
 
   " Sort.

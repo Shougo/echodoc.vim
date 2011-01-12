@@ -80,6 +80,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2010-01-12
+- Fixed echodoc#disable() bug.
+
 2010-12-24
 - Improved documentation.
 
