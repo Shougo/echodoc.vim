@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 17 Jan 2011.
+" Last Modified: 18 Jan 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -58,8 +58,11 @@ function! s:compare(a1, a2)  "{{{
   return a:a1.rank - a:a2.rank
 endfunction"}}}
 function! s:get_cur_text()  "{{{
-  return exists('*neocomplcache#get_cword') ? neocomplcache#get_cword() :
-        \ matchstr(getline('.'), '^.*\%' . col('.') . 'c' . (mode() ==# 'i' ? '' : '.'))
+  let l:cur_text = matchstr(getline('.'), printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
+  if mode() !=# 'i' && exists('*neocomplcache#get_next_keyword')
+    let l:cur_text .= neocomplcache#get_next_keyword()
+  endif
+  return l:cur_text
 endfunction"}}}
 function! s:neocomplcache_enabled()  "{{{
   return exists('neocomplcache#is_enabled') && neocomplcache#is_enabled()
