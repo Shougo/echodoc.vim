@@ -106,6 +106,7 @@ endfunction"}}}
 
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
+unlet s:save_cpo
 " }}}
 " __END__
 " vim: foldmethod=marker
