@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 18 Jan 2011.
+" Last Modified: 22 Apr 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -24,6 +24,11 @@
 " }}}
 " Version: 0.1, for Vim 7.0
 "=============================================================================
+
+" Saving 'cpoptions' {{{
+let s:save_cpo = &cpo
+set cpo&vim
+" }}}
 
 " Variables  "{{{
 let s:echodoc_dicts = []
@@ -99,4 +104,8 @@ function! s:on_cursor_moved()  "{{{
   endfor
 endfunction"}}}
 
+" Restore 'cpoptions' {{{
+let &cpo = s:save_cpo
+" }}}
+" __END__
 " vim: foldmethod=marker

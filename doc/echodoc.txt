@@ -80,6 +80,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2010-04-22
+- Fixed for cpoptions.
+
 2010-01-18
 - Use neocomplcache#get_next_keyword().
 
