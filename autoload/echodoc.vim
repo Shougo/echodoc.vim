@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 22 Apr 2011.
+" Last Modified: 19 Sep 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -63,11 +63,11 @@ function! s:compare(a1, a2)  "{{{
   return a:a1.rank - a:a2.rank
 endfunction"}}}
 function! s:get_cur_text()  "{{{
-  let l:cur_text = matchstr(getline('.'), printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
+  let cur_text = matchstr(getline('.'), printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
   if mode() !=# 'i' && exists('*neocomplcache#get_next_keyword')
-    let l:cur_text .= neocomplcache#get_next_keyword()
+    let cur_text .= neocomplcache#get_next_keyword()
   endif
-  return l:cur_text
+  return cur_text
 endfunction"}}}
 function! s:neocomplcache_enabled()  "{{{
   return exists('neocomplcache#is_enabled') && neocomplcache#is_enabled()
@@ -75,28 +75,28 @@ endfunction"}}}
 
 " Autocmd events.
 function! s:on_cursor_moved()  "{{{
-  let l:cur_text = s:get_cur_text()
-  let l:filetype = s:neocomplcache_enabled() ? neocomplcache#get_context_filetype(1) : &filetype
-  let l:echo_cnt = 0
+  let cur_text = s:get_cur_text()
+  let filetype = s:neocomplcache_enabled() ? neocomplcache#get_context_filetype(1) : &filetype
+  let echo_cnt = 0
 
-  for l:doc_dict in s:echodoc_dicts
-    if empty(l:doc_dict.filetypes) || has_key(l:doc_dict.filetypes, l:filetype)
-      let l:ret = l:doc_dict.search(l:cur_text)
+  for doc_dict in s:echodoc_dicts
+    if empty(doc_dict.filetypes) || has_key(doc_dict.filetypes, filetype)
+      let ret = doc_dict.search(cur_text)
 
-      if !empty(l:ret)
+      if !empty(ret)
         echo ''
-        for l:text in l:ret
-          if has_key(l:text, 'highlight')
-            execute 'echohl' l:text.highlight
-            echon l:text.text
+        for text in ret
+          if has_key(text, 'highlight')
+            execute 'echohl' text.highlight
+            echon text.text
             echohl None
           else
-            echon l:text.text
+            echon text.text
           endif
         endfor
 
-        let l:echo_cnt += 1
-        if l:echo_cnt >= &cmdheight
+        let echo_cnt += 1
+        if echo_cnt >= &cmdheight
           break
         endif
       endif

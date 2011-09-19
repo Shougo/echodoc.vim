@@ -80,6 +80,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2011-09-19
+- Refactoringed local variable name.
+
 2010-04-22
 - Fixed for cpoptions.
 
