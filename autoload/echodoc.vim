@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 19 Sep 2011.
+" Last Modified: 11 Feb 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -76,30 +76,35 @@ endfunction"}}}
 " Autocmd events.
 function! s:on_cursor_moved()  "{{{
   let cur_text = s:get_cur_text()
-  let filetype = s:neocomplcache_enabled() ? neocomplcache#get_context_filetype(1) : &filetype
+  let filetype = s:neocomplcache_enabled() ?
+        \ neocomplcache#get_context_filetype(1) : &filetype
   let echo_cnt = 0
 
   for doc_dict in s:echodoc_dicts
-    if empty(doc_dict.filetypes) || has_key(doc_dict.filetypes, filetype)
-      let ret = doc_dict.search(cur_text)
+    if !empty(doc_dict.filetypes) && !has_key(doc_dict.filetypes, filetype)
+      continue
+    endif
 
-      if !empty(ret)
-        echo ''
-        for text in ret
-          if has_key(text, 'highlight')
-            execute 'echohl' text.highlight
-            echon text.text
-            echohl None
-          else
-            echon text.text
-          endif
-        endfor
+    let ret = doc_dict.search(cur_text)
 
-        let echo_cnt += 1
-        if echo_cnt >= &cmdheight
-          break
-        endif
+    if empty(ret)
+      continue
+    endif
+
+    echo ''
+    for text in ret
+      if has_key(text, 'highlight')
+        execute 'echohl' text.highlight
+        echon text.text
+        echohl None
+      else
+        echon text.text
       endif
+    endfor
+
+    let echo_cnt += 1
+    if echo_cnt >= &cmdheight
+      break
     endif
   endfor
 endfunction"}}}

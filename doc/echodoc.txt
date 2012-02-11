@@ -80,6 +80,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2012-02-11
+- Refactoringed.
+
 2011-09-19
 - Refactoringed local variable name.
 
