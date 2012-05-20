@@ -80,6 +80,9 @@ BUGS						*echodoc-bugs*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2012-05-20
+- Changed autocmd event.
+
 2012-02-11
 - Refactoringed.
 
