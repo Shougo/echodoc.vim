@@ -30,9 +30,6 @@ Interface		|echodoc-interface|
   Commands		  |echodoc-commands|
   Variables		  |echodoc-variables|
 Examples		|echodoc-examples|
-Create source		|echodoc-create-source|
-ToDo			|echodoc-todo|
-Bugs			|echodoc-bugs|
 Changelog		|echodoc-changelog|
 
 ==============================================================================
