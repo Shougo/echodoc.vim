@@ -71,6 +71,9 @@ EXAMPLES					*echodoc-examples*
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
 
+2012-10-13
+- Fixed neocomplcache check.
+
 2012-05-20
 - Changed autocmd event.
 
