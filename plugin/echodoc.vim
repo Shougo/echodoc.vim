@@ -34,7 +34,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-" Global options definition."{{{
+" Global options definition. "{{{
 if exists('g:echodoc_enable_at_startup') && g:echodoc_enable_at_startup
   augroup echodoc
     autocmd!

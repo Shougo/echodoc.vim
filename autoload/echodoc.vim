@@ -34,18 +34,18 @@ set cpo&vim
 let s:echodoc_dicts = []
 "}}}
 
-function! echodoc#enable()"{{{
+function! echodoc#enable() "{{{
   augroup echodoc
     autocmd!
     autocmd CursorHold,CursorHoldI * call s:on_cursor_moved()
   augroup END
 endfunction"}}}
-function! echodoc#disable()"{{{
+function! echodoc#disable() "{{{
   augroup echodoc
     autocmd!
   augroup END
 endfunction"}}}
-function! echodoc#register(name, dict)"{{{
+function! echodoc#register(name, dict) "{{{
   " Unregister previous dict.
   call echodoc#unregister(a:name)
 
@@ -54,7 +54,7 @@ function! echodoc#register(name, dict)"{{{
   " Sort.
   call sort(s:echodoc_dicts, 's:compare')
 endfunction"}}}
-function! echodoc#unregister(name)"{{{
+function! echodoc#unregister(name) "{{{
   call filter(s:echodoc_dicts, 'v:val.name !=#' . string(a:name))
 endfunction"}}}
 
