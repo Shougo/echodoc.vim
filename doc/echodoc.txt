@@ -38,11 +38,27 @@ INTRODUCTION					*echodoc-introduction*
 
 *echodoc* displays information in echo area from echodoc plugin.
 
+|echodoc| has the following properties which cannot be realized by ftplugin:
+	1. outputs messages from multiple plugins,
+	   (required that |cmdheight| is high enough)
+	2. has a priority ranking in the search,
+	3. adds/deletes a plugin at any time,
+	4. hilights messages,
+	5. uses context filetype when |neocomplcache| is installed, and
+	6. uses multiple filetypes.
+
 ==============================================================================
 USAGE						*echodoc-usage*
 
 ==============================================================================
 INSTALL						*echodoc-install*
+
+NeoBundle 'Shougo/echodoc', '', 'default'
+call neobundle#config('echodoc', {
+      \ 'lazy' : 1,
+      \ 'autoload' : {
+      \ 'insert' : 1,
+      \ }})
 
 ==============================================================================
 INTERFACE					*echodoc-interface*
@@ -51,21 +67,64 @@ INTERFACE					*echodoc-interface*
 COMMANDS 					*echodoc-commands*
 
 :EchoDocEnable					*:EchoDocEnable*
-		Enable echodoc.
+		Enables |echodoc|.
 
 :EchoDocDisable					*:EchoDocDisable*
-		Disable echodoc.
+		Disables |echodoc|.
 
 ------------------------------------------------------------------------------
 VARIABLES 					*echodoc-variables*
 
 g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
-		If this variable's value is 1, enable echodoc at startup.
-		
-		Default value is 0.
+		If the value of this variable is non-zero,
+		|echodoc| is automatically enabled at startup.
+		The default value is 0.
 
 ------------------------------------------------------------------------------
 FUNCTIONS 					*echodoc-functions*
+
+echodoc#enable()				*echodoc#enable()*
+		Enables |echodoc|.  This is a function version of |:EchoDocEnable|.
+
+echodoc#disable()				*echodoc#disable()*
+		Disables |echodoc|.  This is a function version of |:EchoDocDisable|.
+
+echodoc#is_enabled()				*echodoc#is_enabled()*
+		Gets weather |echodoc| plugin is enabled.  This function
+		returns Number 1 if |echodoc| is enabled, zero otherwise.
+		(This is not implemented yet.)
+
+echodoc#register({name}, {dict})		*echodoc#register()*
+		Registers the docs {dict} of the name {name}.
+		If the docs with the same name exists, it will be overwritten.
+		{dict} is a |Dictionary| which contains the followings:
+
+		"name"		String (Required)
+			A name of this docs {dict}.  The user can be given
+			any name.  This value and {name} must have the same
+			value.
+
+		"rank"		Number (Required)
+			The priority ranking in the search.  The smaller value
+			shows higher priority.
+
+		"filetypes"	Dictionary (Required)
+			This is a |Dictionary| where the key is a filetype string
+			and the value is anything.
+			|echodoc| uses the {dict} when the {dict} has an entry where
+			the key is the |filetype| of the current buffer.  If this
+			is a empty, |echodoc| always uses the {dict}.
+
+		"search"	Function	(Required)
+			Search function.  This function takes a string as its
+			parameter and returns a list of dictionaries.  The
+			|Dictionary| must have an entry where the key is "text"
+			and the value is a String of a message.  When the
+			|Dictionary| has an entry with the key "highlight",
+			|echodoc| highlights the message.
+
+echodoc#unregister({name})		*echodoc#unregister()*
+		Unregisters the docs of the name {name}.
 
 echodoc#get({name})				 *echodoc#get()*
 		Get the echodoc dictionary for {name}.
