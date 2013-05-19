@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 13 Oct 2012.
+" Last Modified: 19 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -45,6 +45,10 @@ function! echodoc#disable() "{{{
     autocmd!
   augroup END
 endfunction"}}}
+function! echodoc#get(name) "{{{
+  return get(filter(s:echodoc_dicts,
+        \ 'v:val.name ==#' . string(a:name)), 0, {})
+endfunction"}}}
 function! echodoc#register(name, dict) "{{{
   " Unregister previous dict.
   call echodoc#unregister(a:name)
@@ -71,7 +75,7 @@ function! s:get_cur_text()  "{{{
   return cur_text
 endfunction"}}}
 function! s:neocomplcache_enabled()  "{{{
-  return exists('neocomplcache#is_enabled') && neocomplcache#is_enabled()
+  return exists('*neocomplcache#is_enabled') && neocomplcache#is_enabled()
 endfunction"}}}
 
 " Autocmd events.

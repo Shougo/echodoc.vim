@@ -29,6 +29,7 @@ Install			|echodoc-install|
 Interface		|echodoc-interface|
   Commands		  |echodoc-commands|
   Variables		  |echodoc-variables|
+  Functions		  |echodoc-functions|
 Examples		|echodoc-examples|
 Changelog		|echodoc-changelog|
 
@@ -63,6 +64,13 @@ g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
 		
 		Default value is 0.
 
+------------------------------------------------------------------------------
+FUNCTIONS 					*echodoc-functions*
+
+echodoc#get({name})				 *echodoc#get()*
+		Get the echodoc dictionary for {name}.
+		Useful for exists check.
+
 ==============================================================================
 EXAMPLES					*echodoc-examples*
 >
@@ -70,6 +78,10 @@ EXAMPLES					*echodoc-examples*
 >
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
+
+2013-05-19
+- Fixed for cur_text.
+- Added echodoc#get().
 
 2012-10-13
 - Fixed neocomplcache check.
