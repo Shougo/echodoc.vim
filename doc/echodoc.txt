@@ -92,7 +92,6 @@ echodoc#disable()				*echodoc#disable()*
 echodoc#is_enabled()				*echodoc#is_enabled()*
 		Gets weather |echodoc| plugin is enabled.  This function
 		returns Number 1 if |echodoc| is enabled, zero otherwise.
-		(This is not implemented yet.)
 
 echodoc#register({name}, {dict})		*echodoc#register()*
 		Registers the docs {dict} of the name {name}.
@@ -137,6 +136,9 @@ EXAMPLES					*echodoc-examples*
 >
 ==============================================================================
 CHANGELOG					*echodoc-changelog*
+
+2013-05-20
+- Added echodoc#is_enabled().
 
 2013-05-19
 - Fixed for cur_text.

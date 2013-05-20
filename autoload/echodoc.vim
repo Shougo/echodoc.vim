@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 19 May 2013.
+" Last Modified: 20 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -32,6 +32,7 @@ set cpo&vim
 
 " Variables  "{{{
 let s:echodoc_dicts = []
+let s:is_enabled = 0
 "}}}
 
 function! echodoc#enable() "{{{
@@ -39,11 +40,16 @@ function! echodoc#enable() "{{{
     autocmd!
     autocmd CursorHold,CursorHoldI * call s:on_cursor_moved()
   augroup END
+  let s:is_enabled = 1
 endfunction"}}}
 function! echodoc#disable() "{{{
   augroup echodoc
     autocmd!
   augroup END
+  let s:is_enabled = 0
+endfunction"}}}
+function! echodoc#is_enabled() "{{{
+  return s:is_enabled
 endfunction"}}}
 function! echodoc#get(name) "{{{
   return get(filter(s:echodoc_dicts,
