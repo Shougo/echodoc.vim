@@ -36,6 +36,11 @@ let s:is_enabled = 0
 "}}}
 
 function! echodoc#enable() "{{{
+  if &cmdheight < 2
+    echohl Error | echomsg "Your cmdheight is too small."
+          \ . " You must increase 'cmdheight' value." | echohl None
+  endif
+
   augroup echodoc
     autocmd!
     autocmd CursorHold,CursorMovedI * call s:on_cursor_moved()
