@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 20 May 2013.
+" Last Modified: 26 Nov 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -38,7 +38,7 @@ let s:is_enabled = 0
 function! echodoc#enable() "{{{
   augroup echodoc
     autocmd!
-    autocmd CursorHold,CursorHoldI * call s:on_cursor_moved()
+    autocmd CursorHold,CursorMovedI * call s:on_cursor_moved()
   augroup END
   let s:is_enabled = 1
 endfunction"}}}
@@ -75,24 +75,37 @@ endfunction"}}}
 function! s:get_cur_text()  "{{{
   let cur_text = matchstr(getline('.'),
         \ printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
-  if mode() !=# 'i' && s:neocomplcache_enabled()
-    let cur_text .= neocomplcache#get_next_keyword()
+  if mode() !=# 'i' && s:neocomplete_enabled()
+    let cur_text .= neocomplete#get_next_keyword()
   endif
   return cur_text
 endfunction"}}}
-function! s:neocomplcache_enabled()  "{{{
-  return exists('*neocomplcache#is_enabled') && neocomplcache#is_enabled()
+function! s:neocomplete_enabled()  "{{{
+  return exists('*neocomplete#is_enabled') && neocomplete#is_enabled()
+endfunction"}}}
+function! s:context_filetype_enabled()  "{{{
+  if !exists('s:exists_context_filetype')
+    try
+      call context_filetype#version()
+      let s:exists_context_filetype = 1
+    catch
+      let s:exists_context_filetype = 0
+    endtry
+  endif
+
+  return s:exists_context_filetype
 endfunction"}}}
 
 " Autocmd events.
 function! s:on_cursor_moved()  "{{{
   let cur_text = s:get_cur_text()
-  let filetype = s:neocomplcache_enabled() ?
-        \ neocomplcache#get_context_filetype(1) : &filetype
+  let filetype = s:context_filetype_enabled() ?
+        \ context_filetype#get_filetype(&filetype) : &filetype
   let echo_cnt = 0
 
   for doc_dict in s:echodoc_dicts
-    if !empty(doc_dict.filetypes) && !has_key(doc_dict.filetypes, filetype)
+    if !empty(get(doc_dict, 'filetypes', []))
+          \ && !has_key(doc_dict.filetypes, filetype)
       continue
     endif
 

@@ -36,10 +36,10 @@ set cpo&vim
 
 " Global options definition. "{{{
 if exists('g:echodoc_enable_at_startup') && g:echodoc_enable_at_startup
+  " Enable startup.
   augroup echodoc
     autocmd!
-    " Enable startup.
-    autocmd VimEnter * call echodoc#enable()
+    autocmd InsertEnter * call echodoc#enable()
   augroup END
 endif"}}}
 "}}}

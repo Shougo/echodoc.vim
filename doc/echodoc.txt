@@ -44,7 +44,8 @@ INTRODUCTION					*echodoc-introduction*
 	2. has a priority ranking in the search,
 	3. adds/deletes a plugin at any time,
 	4. hilights messages,
-	5. uses context filetype when |neocomplcache| is installed, and
+	5. uses context filetype when |context_filetype| is installed, and
+	https://github.com/Shougo/context_filetype.vim
 	6. uses multiple filetypes.
 
 ==============================================================================
