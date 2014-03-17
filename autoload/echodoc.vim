@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: echodoc.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 23 Jan 2014.
+" Last Modified: 17 Mar 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -37,7 +37,7 @@ let s:is_enabled = 0
 
 function! echodoc#enable() "{{{
   if &cmdheight < 2
-    echohl Error | echomsg "Your cmdheight is too small."
+    echohl Error | echomsg "[echodoc] Your cmdheight is too small."
           \ . " You must increase 'cmdheight' value." | echohl None
   endif
 
