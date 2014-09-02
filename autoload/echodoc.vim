@@ -35,9 +35,11 @@ let s:is_enabled = 0
 "}}}
 
 function! echodoc#enable() "{{{
-  if &cmdheight < 2
-    echohl Error | echomsg "[echodoc] Your cmdheight is too small."
-          \ . " You must increase 'cmdheight' value." | echohl None
+  if &showmode && &cmdheight < 2
+    " Increase the cmdheight so user can clearly see the error
+    set cmdheight=2
+    echohl Error | echomsg "[echodoc] Your cmdheight is too small. You must"
+          \ . " increase 'cmdheight' value or set noshowmode." | echohl None
   endif
 
   augroup echodoc

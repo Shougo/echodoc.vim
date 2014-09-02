@@ -40,15 +40,18 @@ INTRODUCTION					*echodoc-introduction*
 
 |echodoc| has the following properties which cannot be realized by ftplugin:
 	1. outputs messages from multiple plugins,
-	   (required that |cmdheight| is high enough)
+	   (required that |cmdheight| is high enough or |noshowmode|)
 	2. has a priority ranking in the search,
 	3. adds/deletes a plugin at any time,
-	4. hilights messages,
+	4. highlights messages,
 	5. uses context filetype when |context_filetype| is installed, and
-	https://github.com/Shougo/context_filetype.vim
+	   https://github.com/Shougo/context_filetype.vim
 	6. uses multiple filetypes.
 
-Note: To use echodoc, you must increase 'cmdheight' value(2 or above).
+Note: To use echodoc, you must increase 'cmdheight' value (2 or above),
+	or disable showmode with 'noshowmode' so you will be able to see
+	|echodoc|'s information clearly, without the "-- INSERT --" message
+	overwriting it.
 
 ==============================================================================
 USAGE						*echodoc-usage*
@@ -135,8 +138,14 @@ echodoc#get({name})				 *echodoc#get()*
 ==============================================================================
 EXAMPLES					*echodoc-examples*
 >
+Option 1:
 	" To use echodoc, you must increase 'cmdheight' value.
 	set cmdheight=2
+	let g:echodoc_enable_at_startup = 1
+
+Option 2:
+	" Or, you could disable showmode alltogether.
+	set noshowmode
 	let g:echodoc_enable_at_startup = 1
 >
 ==============================================================================
