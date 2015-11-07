@@ -146,7 +146,6 @@ function! s:on_cursor_moved()  "{{{
   let cur_text = s:get_cur_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
-  let echo_cnt = 0
 
   if !exists('b:echodoc')
     let b:echodoc = []
