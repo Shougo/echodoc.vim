@@ -38,8 +38,8 @@ function! echodoc#enable() "{{{
   if &showmode && &cmdheight < 2
     " Increase the cmdheight so user can clearly see the error
     set cmdheight=2
-    echohl Error | echomsg "[echodoc] Your cmdheight is too small. You must"
-          \ . " increase 'cmdheight' value or set noshowmode." | echohl None
+    call s:print_error('Your cmdheight is too small. '
+          \ .'You must increase ''cmdheight'' value or set noshowmode.')
   endif
 
   augroup echodoc
@@ -98,6 +98,9 @@ function! s:context_filetype_enabled()  "{{{
 
   return s:exists_context_filetype
 endfunction"}}}
+function! s:print_error(msg)  "{{{
+  echohl Error | echomsg '[echodoc] '  . a:msg | echohl None
+endfunction"}}}
 
 " Autocmd events.
 function! s:on_cursor_moved()  "{{{
@@ -106,6 +109,11 @@ function! s:on_cursor_moved()  "{{{
         \ context_filetype#get_filetype(&filetype) : &filetype
   let echo_cnt = 0
 
+  if !exists('b:echodoc')
+    let b:echodoc = []
+  endif
+
+  let echodoc = b:echodoc
   for doc_dict in s:echodoc_dicts
     if !empty(get(doc_dict, 'filetypes', []))
           \ && !has_key(doc_dict.filetypes, filetype)
@@ -114,24 +122,22 @@ function! s:on_cursor_moved()  "{{{
 
     let ret = doc_dict.search(cur_text)
 
-    if empty(ret)
-      continue
-    endif
-
-    echo ''
-    for text in ret
-      if has_key(text, 'highlight')
-        execute 'echohl' text.highlight
-        echon text.text
-        echohl None
-      else
-        echon text.text
-      endif
-    endfor
-
-    let echo_cnt += 1
-    if echo_cnt >= &cmdheight
+    if !empty(ret)
+      " Overwrite cached result
+      let b:echodoc = ret
+      let echodoc = ret
       break
+    endif
+  endfor
+
+  echo ''
+  for text in echodoc
+    if has_key(text, 'highlight')
+      execute 'echohl' text.highlight
+      echon text.text
+      echohl None
+    else
+      echon text.text
     endif
   endfor
 endfunction"}}}
