@@ -30,7 +30,50 @@ set cpo&vim
 " }}}
 
 " Variables  "{{{
-let s:echodoc_dicts = []
+" Default dict. "{{{
+let s:default = {
+      \ 'name' : 'default',
+      \ 'rank' : 10,
+      \ }
+" @vimlint(EVL102, 1, v:completed_item)
+function! s:default.search(cur_text) "{{{
+  if !exists('v:completed_item') || empty(v:completed_item)
+    return []
+  endif
+
+  let item = v:completed_item
+
+  let abbr = (item.abbr != '') ? item.abbr : item.word
+  if len(item.menu) > 5
+    " Combine menu.
+    let abbr .= ' ' . item.menu
+  endif
+
+  if item.info != ''
+    let abbr = split(item.info, '\n\|\\n')[0]
+  endif
+
+  " Skip
+  if len(abbr) < len(item.word) + 2
+    return []
+  endif
+
+  let ret = []
+
+  let match = stridx(abbr, item.word)
+  if match < 0
+    call add(ret, { 'text' : abbr })
+  else
+    call add(ret, { 'text' : item.word, 'highlight' : 'Identifier' })
+    call add(ret, { 'text' : abbr[match+len(item.word) :] })
+  endif
+
+  return ret
+endfunction"}}}
+" @vimlint(EVL102, 0, v:completed_item)
+"}}}
+
+let s:echodoc_dicts = [ s:default ]
 let s:is_enabled = 0
 "}}}
 
