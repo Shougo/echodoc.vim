@@ -125,9 +125,6 @@ function! s:get_cur_text()  "{{{
         \ printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
   return cur_text
 endfunction"}}}
-function! s:neocomplete_enabled()  "{{{
-  return exists('*neocomplete#is_enabled') && neocomplete#is_enabled()
-endfunction"}}}
 function! s:context_filetype_enabled()  "{{{
   if !exists('s:exists_context_filetype')
     try
@@ -148,7 +145,7 @@ endfunction"}}}
 function! s:on_cursor_moved()  "{{{
   let cur_text = s:get_cur_text()
   let filetype = s:context_filetype_enabled() ?
-        \ context_filetype#get_filetype(&filetype) : &filetype
+        \ context_filetype#get_filetype(&filetype) : &l:filetype
   let echo_cnt = 0
 
   if !exists('b:echodoc')
