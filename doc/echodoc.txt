@@ -90,10 +90,12 @@ g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
 FUNCTIONS 					*echodoc-functions*
 
 echodoc#enable()				*echodoc#enable()*
-		Enables |echodoc|.  This is a function version of |:EchoDocEnable|.
+		Enables |echodoc|.  This is a function version of
+		|:EchoDocEnable|.
 
 echodoc#disable()				*echodoc#disable()*
-		Disables |echodoc|.  This is a function version of |:EchoDocDisable|.
+		Disables |echodoc|.  This is a function version of
+		|:EchoDocDisable|.
 
 echodoc#is_enabled()				*echodoc#is_enabled()*
 		Gets weather |echodoc| plugin is enabled.  This function
