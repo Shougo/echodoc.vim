@@ -35,7 +35,7 @@ let s:default = {
       \ 'rank' : 10,
       \ }
 " @vimlint(EVL102, 1, v:completed_item)
-function! s:default.search(cur_text) "{{{
+function! s:default.search(cur_text) abort "{{{
   if !exists('v:completed_item') || empty(v:completed_item)
     return []
   endif
@@ -76,7 +76,7 @@ let s:echodoc_dicts = [ s:default ]
 let s:is_enabled = 0
 "}}}
 
-function! echodoc#enable() "{{{
+function! echodoc#enable() abort "{{{
   if &showmode && &cmdheight < 2
     " Increase the cmdheight so user can clearly see the error
     set cmdheight=2
@@ -90,20 +90,20 @@ function! echodoc#enable() "{{{
   augroup END
   let s:is_enabled = 1
 endfunction"}}}
-function! echodoc#disable() "{{{
+function! echodoc#disable() abort "{{{
   augroup echodoc
     autocmd!
   augroup END
   let s:is_enabled = 0
 endfunction"}}}
-function! echodoc#is_enabled() "{{{
+function! echodoc#is_enabled() abort "{{{
   return s:is_enabled
 endfunction"}}}
-function! echodoc#get(name) "{{{
+function! echodoc#get(name) abort "{{{
   return get(filter(s:echodoc_dicts,
         \ 'v:val.name ==#' . string(a:name)), 0, {})
 endfunction"}}}
-function! echodoc#register(name, dict) "{{{
+function! echodoc#register(name, dict) abort "{{{
   " Unregister previous dict.
   call echodoc#unregister(a:name)
 
@@ -112,20 +112,20 @@ function! echodoc#register(name, dict) "{{{
   " Sort.
   call sort(s:echodoc_dicts, 's:compare')
 endfunction"}}}
-function! echodoc#unregister(name) "{{{
+function! echodoc#unregister(name) abort "{{{
   call filter(s:echodoc_dicts, 'v:val.name !=#' . string(a:name))
 endfunction"}}}
 
 " Misc.
-function! s:compare(a1, a2)  "{{{
+function! s:compare(a1, a2) abort  "{{{
   return a:a1.rank - a:a2.rank
 endfunction"}}}
-function! s:get_cur_text()  "{{{
+function! s:get_cur_text() abort  "{{{
   let cur_text = matchstr(getline('.'),
         \ printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
   return cur_text
 endfunction"}}}
-function! s:context_filetype_enabled()  "{{{
+function! s:context_filetype_enabled() abort  "{{{
   if !exists('s:exists_context_filetype')
     try
       call context_filetype#version()
@@ -137,12 +137,12 @@ function! s:context_filetype_enabled()  "{{{
 
   return s:exists_context_filetype
 endfunction"}}}
-function! s:print_error(msg)  "{{{
+function! s:print_error(msg) abort  "{{{
   echohl Error | echomsg '[echodoc] '  . a:msg | echohl None
 endfunction"}}}
 
 " Autocmd events.
-function! s:on_cursor_moved()  "{{{
+function! s:on_cursor_moved() abort  "{{{
   let cur_text = s:get_cur_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
