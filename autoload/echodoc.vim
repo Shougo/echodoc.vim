@@ -86,7 +86,7 @@ function! echodoc#enable() abort "{{{
 
   augroup echodoc
     autocmd!
-    autocmd CursorMovedI * call s:on_cursor_moved()
+    autocmd CompleteDone,CursorMovedI * call s:on_cursor_moved()
   augroup END
   let s:is_enabled = 1
 endfunction"}}}
