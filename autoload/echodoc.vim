@@ -43,9 +43,10 @@ function! s:default.search(cur_text) abort "{{{
   let item = v:completed_item
 
   let abbr = (item.abbr != '') ? item.abbr : item.word
-  if len(item.menu) > 5
+  let menu = substitute(item.menu, '^\[.\{-}\]\s*', '', '')
+  if menu != ''
     " Combine menu.
-    let abbr .= ' ' . item.menu
+    let abbr .= ' ' . menu
   endif
 
   if item.info != ''
