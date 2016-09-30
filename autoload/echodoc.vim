@@ -10,44 +10,81 @@ set cpo&vim
 " }}}
 
 " Variables  "{{{
+let s:max_parse_len = 100
+let s:complete_cache = {}
+
 " Default dict. "{{{
 let s:default = {
       \ 'name' : 'default',
       \ 'rank' : 10,
       \ }
+
 " @vimlint(EVL102, 1, v:completed_item)
-function! s:default.search(cur_text) abort "{{{
-  if !exists('v:completed_item') || empty(v:completed_item)
+function! s:default.search(cur_text, filetype) abort "{{{
+  if a:filetype == ''
     return []
   endif
 
-  let item = v:completed_item
-
-  let abbr = (item.abbr != '') ? item.abbr : item.word
-  let menu = substitute(item.menu, '^\[.\{-}\]\s*', '', '')
-  if menu != ''
-    " Combine menu.
-    let abbr .= ' ' . menu
+  if !has_key(s:complete_cache, a:filetype)
+    let s:complete_cache[a:filetype] = {}
   endif
 
-  if item.info != ''
-    let abbr = split(item.info, '\n\|\\n')[0]
+  let cache = s:complete_cache[a:filetype]
+  let comp = {}
+
+  if !empty(v:completed_item)
+    let v_comp = echodoc#util#completion_signature(v:completed_item, s:max_parse_len)
+    if !empty(v_comp)
+      if a:filetype == 'vim'
+        let args = []
+        for i in range(len(v_comp.args))
+          for a in split(substitute(v_comp.args[i], '\[, ', ',[', 'g'), ',')
+            call add(args, matchstr(a, '\s*\zs.\{-}\ze\s*$'))
+          endfor
+        endfor
+
+        let v_comp.args = args
+      endif
+
+      let cache[v_comp.name] = v_comp
+    endif
   endif
 
-  " Skip
-  if len(abbr) < len(item.word) + 2
+  for comp in reverse(echodoc#util#parse_funcs(a:cur_text))
+    if comp.end == -1
+      break
+    endif
+  endfor
+
+  if empty(comp) || !has_key(cache, comp.name)
     return []
   endif
 
-  let ret = []
+  let v_comp = cache[comp.name]
+  let ret = [{'text': v_comp.name, 'highlight': 'Identifier'}, {'text': '('}]
+  let l = max([comp.pos, len(v_comp.args)])
 
-  let match = stridx(abbr, item.word)
-  if match < 0
-    call add(ret, { 'text' : abbr })
-  else
-    call add(ret, { 'text' : item.word, 'highlight' : 'Identifier' })
-    call add(ret, { 'text' : abbr[match+len(item.word) :] })
-  endif
+  for i in range(l)
+    let item = {'text': '#'.i}
+
+    if i < len(v_comp.args)
+      let arg = v_comp.args[i]
+      let item.text = matchstr(arg, '^\_s*\zs.\{-}\ze\_s*$')
+    endif
+
+    if i == comp.pos - 1 || (i == 0 && comp.pos == 0)
+      let item.highlight = 'Special'
+      let item.i = i
+    endif
+
+    call add(ret, item)
+
+    if i != l - 1
+      call add(ret, {'text': ', '})
+    endif
+  endfor
+
+  call add(ret, {'text': ')'})
 
   return ret
 endfunction"}}}
@@ -125,6 +162,18 @@ endfunction"}}}
 
 " Autocmd events.
 function! s:on_cursor_moved() abort  "{{{
+  if !has('timers')
+    return s:_on_cursor_moved()
+  endif
+
+  if exists('s:_timer')
+    call timer_stop(s:_timer)
+  endif
+
+  let s:_timer = timer_start(100, 's:_on_cursor_moved')
+endfunction"}}}
+function! s:_on_cursor_moved() abort  "{{{
+  unlet! s:_timer
   let cur_text = s:get_cur_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
@@ -140,7 +189,11 @@ function! s:on_cursor_moved() abort  "{{{
       continue
     endif
 
-    let ret = doc_dict.search(cur_text)
+    if doc_dict.name == 'default'
+      let ret = doc_dict.search(cur_text, filetype)
+    else
+      let ret = doc_dict.search(cur_text)
+    endif
 
     if !empty(ret)
       " Overwrite cached result
