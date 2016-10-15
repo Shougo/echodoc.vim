@@ -163,16 +163,16 @@ endfunction"}}}
 " Autocmd events.
 function! s:on_cursor_moved() abort  "{{{
   if !has('timers')
-    return s:_on_cursor_moved()
+    return s:_on_cursor_moved(0)
   endif
 
   if exists('s:_timer')
     call timer_stop(s:_timer)
   endif
 
-  let s:_timer = timer_start(100, 's:_on_cursor_moved')
+  let s:_timer = timer_start(100, function('s:_on_cursor_moved'))
 endfunction"}}}
-function! s:_on_cursor_moved() abort  "{{{
+function! s:_on_cursor_moved(timer) abort  "{{{
   unlet! s:_timer
   let cur_text = s:get_cur_text()
   let filetype = s:context_filetype_enabled() ?
