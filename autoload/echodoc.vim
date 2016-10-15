@@ -10,7 +10,6 @@ set cpo&vim
 " }}}
 
 " Variables  "{{{
-let s:max_parse_len = 1000
 let s:complete_cache = {}
 
 " Default dict. "{{{
@@ -33,9 +32,10 @@ function! s:default.search(cur_text, filetype) abort "{{{
   let comp = {}
 
   if !empty(v:completed_item)
-    let v_comp = echodoc#util#completion_signature(v:completed_item, s:max_parse_len)
+    let v_comp = echodoc#util#completion_signature(
+          \ v:completed_item, &columns - 1)
     if !empty(v_comp)
-      if a:filetype == 'vim'
+      if a:filetype ==# 'vim'
         let args = []
         for i in range(len(v_comp.args))
           for a in split(substitute(v_comp.args[i], '\[, ', ',[', 'g'), ',')
@@ -189,7 +189,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
       continue
     endif
 
-    if doc_dict.name == 'default'
+    if doc_dict.name ==# 'default'
       let ret = doc_dict.search(cur_text, filetype)
     else
       let ret = doc_dict.search(cur_text)
@@ -203,7 +203,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
     endif
   endfor
 
-  echo ''
+  redraw
   for text in echodoc
     if has_key(text, 'highlight')
       execute 'echohl' text.highlight
