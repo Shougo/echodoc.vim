@@ -143,11 +143,6 @@ endfunction"}}}
 function! s:compare(a1, a2) abort  "{{{
   return a:a1.rank - a:a2.rank
 endfunction"}}}
-function! s:get_cur_text() abort  "{{{
-  let cur_text = matchstr(getline('.'),
-        \ printf('^.*\%%%dc%s', col('.'), (mode() ==# 'i' ? '' : '.')))
-  return cur_text
-endfunction"}}}
 function! s:context_filetype_enabled() abort  "{{{
   if !exists('s:exists_context_filetype')
     try
@@ -179,7 +174,7 @@ endfunction"}}}
 " @vimlint(EVL103, 1, a:timer)
 function! s:_on_cursor_moved(timer) abort  "{{{
   unlet! s:_timer
-  let cur_text = s:get_cur_text()
+  let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
 
@@ -219,7 +214,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
     endif
   endfor
 endfunction"}}}
-" @vimlint(EVL102, 1, a:timer)
+" @vimlint(EVL103, 0, a:timer)
 
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
