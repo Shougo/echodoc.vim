@@ -86,6 +86,10 @@ function! s:default.search(cur_text, filetype) abort "{{{
 
   call add(ret, {'text': ')'})
 
+  if has_key(v_comp, 'trailing') && !empty(v_comp.trailing)
+    call add(ret, {'text': ' -> '.v_comp.trailing})
+  endif
+
   return ret
 endfunction"}}}
 " @vimlint(EVL102, 0, v:completed_item)
