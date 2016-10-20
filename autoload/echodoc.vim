@@ -176,6 +176,7 @@ function! s:on_cursor_moved() abort  "{{{
 
   let s:_timer = timer_start(100, function('s:_on_cursor_moved'))
 endfunction"}}}
+" @vimlint(EVL103, 1, a:timer)
 function! s:_on_cursor_moved(timer) abort  "{{{
   unlet! s:_timer
   let cur_text = s:get_cur_text()
@@ -218,6 +219,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
     endif
   endfor
 endfunction"}}}
+" @vimlint(EVL102, 1, a:timer)
 
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
