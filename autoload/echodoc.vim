@@ -10,7 +10,7 @@ set cpo&vim
 " }}}
 
 " Variables  "{{{
-let s:max_parse_len = 100
+let s:max_parse_len = 1000
 let s:complete_cache = {}
 
 " Default dict. "{{{
