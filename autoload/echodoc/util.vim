@@ -125,6 +125,11 @@ function! echodoc#util#parse_funcs(text) abort
     let item.pos += 1
   endif
 
+  if len(stack) && stack[-1].opens[0] == 0
+    let item = stack[-1]
+    let item.trailing = matchstr(a:text, '\s*\zs\p*', item.end + 2)
+  endif
+
   return stack
 endfunction
 
