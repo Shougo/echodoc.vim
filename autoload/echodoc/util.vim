@@ -5,6 +5,99 @@
 " License: MIT license
 "=============================================================================
 
+" Return the next column and character at the column position in text.  Keep
+" scanning until a usable character is found.  This should be safe for
+" multi-byte characters.
+function! s:mbprevchar(text, col) abort
+  if a:col < 0
+    return [a:col, '']
+  endif
+  let c = matchstr(a:text, '\%'.a:col.'c.')
+  let c1 = a:col - 1
+  while c1 > 0 && c == ''
+    let c = matchstr(a:text, '\%'.c1.'c.')
+    let c1 -= 1
+  endwhile
+  return [c1, c]
+endfunction
+
+" Try to find a function at the current position.
+" Stops if `echodoc_max_blank_lines` is encountered. (max 50)
+" @vimlint(EVL102, 1, l:_)
+function! echodoc#util#get_func_text() abort
+  let l2 = line('.')
+  let c2 = col('.') - 1
+  let l1 = l2
+  let c1 = c2
+
+  let skip = 0
+  let last_quote = ''
+  let text = getline(l1)
+  let found = 0
+  let line_guard = 0
+  let blank = 0
+  let max_blank = max([1, get(b:, 'echodoc_max_blank_lines',
+        \ get(g:, 'echodoc_max_blank_lines', 1))])
+
+  while l1 > 0 && line_guard < 50 && blank < max_blank
+    if c1 <= 0
+      let l1 -= 1
+      let c1 = col([l1, '$'])
+      let text = getline(l1)
+      if len(text) == 0
+        let blank += 1
+      else
+        let blank = 0
+      endif
+      let line_guard += 1
+      continue
+    endif
+
+    let [c1, c] = s:mbprevchar(text, c1)
+    let p = ''
+
+    if c1 > 0
+      let [_, p] = s:mbprevchar(text, c1)
+      if p == '\'
+        continue
+      endif
+    endif
+
+    if last_quote == '' && (c == "'" || c == '"' || c == '`')
+      let last_quote = c
+      continue
+    elseif last_quote != ''
+      if last_quote == c
+        let last_quote = ''
+      endif
+      continue
+    endif
+
+    if c == '('
+      if skip == 0
+        if p =~# '\k'
+          let found = 1
+          break
+        endif
+      else
+        let skip -= 1
+      endif
+    elseif c == ')'
+      let skip += 1
+    endif
+  endwhile
+
+  if found && l1 > 0 && c1 > 0
+    let lines = getline(l1, l2)
+    let lines[-1] = c2 == 0 ? '' : lines[-1][:c2 - 1]
+    let lines[0] = c1 == 0 ? '' : matchstr(lines[0], '\k\+\%>'.(c1 - 1).'c.*')
+    return join(lines, "\n")
+  endif
+
+  return ''
+endfunction
+" @vimlint(EVL102, 0, l:_)
+
 " Returns a parsed stack of functions found in the text.  Each item in the
 " stack contains a dict:
 " - name: Function name.
