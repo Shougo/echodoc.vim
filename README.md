@@ -8,6 +8,8 @@ Displays function signatures from completions in the command line.
 
 Use a package manager and follow its instructions.
 
+Note: echodoc requires v:completed_item feature.  It is added in Vim 7.4.774.
+
 ## Usage
 
 The command line is used to display `echodoc` text.  This means that you will
