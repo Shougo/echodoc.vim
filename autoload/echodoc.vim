@@ -203,7 +203,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
     endif
   endfor
 
-  redraw
+  echo ''
   for text in echodoc
     if has_key(text, 'highlight')
       execute 'echohl' text.highlight
