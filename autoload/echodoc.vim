@@ -178,6 +178,17 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
 
+  " No function text was found
+  if cur_text == ''
+    if exists('b:echodoc')
+      " Clear command line message if there was segnature cached
+      echo ''
+      " Clear cached signature
+      unlet! b:echodoc
+    endif
+    return 
+  endif
+
   if !exists('b:echodoc')
     let b:echodoc = []
   endif
