@@ -1,13 +1,8 @@
 "=============================================================================
 " FILE: echodoc.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
+" AUTHOR:  Shougo Matsushita <Shougo.Matsu at gmail.com>
 " License: MIT license
 "=============================================================================
-
-" Saving 'cpoptions' {{{
-let s:save_cpo = &cpo
-set cpo&vim
-" }}}
 
 " Variables  "{{{
 let s:echodoc_dicts = [ echodoc#default#get() ]
@@ -142,9 +137,5 @@ function! s:_on_cursor_moved(timer) abort  "{{{
 endfunction"}}}
 " @vimlint(EVL103, 0, a:timer)
 
-" Restore 'cpoptions' {{{
-let &cpo = s:save_cpo
-unlet s:save_cpo
-" }}}
 " __END__
 " vim: foldmethod=marker

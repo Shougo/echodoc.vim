@@ -1,6 +1,6 @@
 "=============================================================================
 " FILE: autoload/echodoc/util.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
+" AUTHOR:  Shougo Matsushita <Shougo.Matsu at gmail.com>
 "          Tommy Allen <tommy@esdf.io>
 " License: MIT license
 "=============================================================================
