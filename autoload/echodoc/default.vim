@@ -24,25 +24,6 @@ function! s:default.search(cur_text, filetype) abort "{{{
   let cache = s:complete_cache[a:filetype]
   let comp = {}
 
-  if !empty(v:completed_item)
-    let v_comp = echodoc#util#completion_signature(
-          \ v:completed_item, &columns - 1)
-    if !empty(v_comp)
-      if a:filetype ==# 'vim'
-        let args = []
-        for i in range(len(v_comp.args))
-          for a in split(substitute(v_comp.args[i], '\[, ', ',[', 'g'), ',')
-            call add(args, matchstr(a, '\s*\zs.\{-}\ze\s*$'))
-          endfor
-        endfor
-
-        let v_comp.args = args
-      endif
-
-      let cache[v_comp.name] = v_comp
-    endif
-  endif
-
   for comp in reverse(echodoc#util#parse_funcs(a:cur_text))
     if comp.end == -1
       break
@@ -89,6 +70,31 @@ endfunction"}}}
 
 function! echodoc#default#get() abort "{{{
   return s:default
+endfunction"}}}
+
+function! echodoc#default#make_cache(filetype) abort "{{{
+  if !has_key(s:complete_cache, a:filetype)
+    let s:complete_cache[a:filetype] = {}
+  endif
+
+  let cache = s:complete_cache[a:filetype]
+
+  let v_comp = echodoc#util#completion_signature(
+        \ v:completed_item, &columns - 1)
+  if !empty(v_comp)
+    if a:filetype ==# 'vim'
+      let args = []
+      for i in range(len(v_comp.args))
+        for a in split(substitute(v_comp.args[i], '\[, ', ',[', 'g'), ',')
+          call add(args, matchstr(a, '\s*\zs.\{-}\ze\s*$'))
+        endfor
+      endfor
+
+      let v_comp.args = args
+    endif
+
+    let cache[v_comp.name] = v_comp
+  endif
 endfunction"}}}
 
 " vim: foldmethod=marker

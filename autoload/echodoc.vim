@@ -88,6 +88,10 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
 
+  if filetype != '' && exists('v:completed_item') && !empty(v:completed_item)
+    call echodoc#default#make_cache(filetype)
+  endif
+
   " No function text was found
   if cur_text == ''
     if exists('b:echodoc')

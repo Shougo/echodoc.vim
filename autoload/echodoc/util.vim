@@ -32,7 +32,7 @@ function! echodoc#util#get_func_text() abort
 
   let skip = 0
   let last_quote = ''
-  let text = getline(l1)
+  let text = getline(l1)[: c2-1]
   let found = 0
   let line_guard = 0
   let blank = 0
