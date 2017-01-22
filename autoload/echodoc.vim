@@ -88,12 +88,16 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
 
-  if filetype != '' && exists('v:completed_item') && !empty(v:completed_item)
+  if filetype != '' && empty(get(v:, 'completed_item', {}))
     call echodoc#default#make_cache(filetype)
   endif
 
+  let dicts = filter(copy(s:echodoc_dicts),
+        \ "empty(get(v:val, 'filetypes', {}))
+        \  || get(v:val.filetypes, filetype, 0)")
+
   " No function text was found
-  if cur_text == ''
+  if cur_text == '' && len(dicts) == 1
     if exists('b:echodoc')
       " Clear command line message if there was segnature cached
       echo ''
@@ -108,12 +112,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   endif
 
   let echodoc = b:echodoc
-  for doc_dict in s:echodoc_dicts
-    if !empty(get(doc_dict, 'filetypes', []))
-          \ && !has_key(doc_dict.filetypes, filetype)
-      continue
-    endif
-
+  for doc_dict in dicts
     if doc_dict.name ==# 'default'
       let ret = doc_dict.search(cur_text, filetype)
     else
@@ -140,6 +139,8 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   endfor
 endfunction"}}}
 " @vimlint(EVL103, 0, a:timer)
+
+call echodoc#register('ruby', echodoc#ruby#get())
 
 " __END__
 " vim: foldmethod=marker

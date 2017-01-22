@@ -80,7 +80,7 @@ function! echodoc#default#make_cache(filetype) abort "{{{
   let cache = s:complete_cache[a:filetype]
 
   let v_comp = echodoc#util#completion_signature(
-        \ v:completed_item, &columns - 1)
+        \ v:completed_item, &columns - 1, a:filetype)
   if !empty(v_comp)
     if a:filetype ==# 'vim'
       let args = []
@@ -91,6 +91,8 @@ function! echodoc#default#make_cache(filetype) abort "{{{
       endfor
 
       let v_comp.args = args
+    elseif a:filetype ==# 'ruby'
+      " Use ri command
     endif
 
     let cache[v_comp.name] = v_comp

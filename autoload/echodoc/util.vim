@@ -227,7 +227,7 @@ function! echodoc#util#parse_funcs(text) abort
 endfunction
 
 
-function! echodoc#util#completion_signature(completion, maxlen) abort
+function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
   if empty(a:completion)
     return {}
   endif
@@ -239,10 +239,8 @@ function! echodoc#util#completion_signature(completion, maxlen) abort
       let info = a:completion.abbr
     elseif a:completion.menu =~# '^.\+('
       let info = a:completion.menu
-    else
-      if a:completion.word =~# '^.\+(' || a:completion.kind == 'f'
-        let info = a:completion.word
-      endif
+    elseif a:completion.word =~# '^.\+(' || a:completion.kind == 'f'
+      let info = a:completion.word
     endif
   endif
 
