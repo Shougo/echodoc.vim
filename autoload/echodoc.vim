@@ -88,7 +88,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
 
-  if filetype != '' && empty(get(v:, 'completed_item', {}))
+  if filetype != '' && !empty(get(v:, 'completed_item', {}))
     call echodoc#default#make_cache(filetype)
   endif
 
