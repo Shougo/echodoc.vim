@@ -66,10 +66,23 @@ COMMANDS 					*echodoc-commands*
 ------------------------------------------------------------------------------
 VARIABLES 					*echodoc-variables*
 
-g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
+g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 		If the value of this variable is non-zero,
 		|echodoc| is automatically enabled at startup.
 		The default value is 0.
+
+g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
+		It is deprecated variable name.
+
+g:echodoc#highlight_identifier		*g:echodoc#highlight_identifier*
+		The highlight of identifier.
+
+		Default: "Identifier"
+
+g:echodoc#highlight_arguments		*g:echodoc#highlight_arguments*
+		The highlight of current argument.
+
+		Default: "Special"
 
 ------------------------------------------------------------------------------
 FUNCTIONS 					*echodoc-functions*

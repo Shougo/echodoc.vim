@@ -35,7 +35,12 @@ function! s:default.search(cur_text, filetype) abort "{{{
   endif
 
   let v_comp = cache[comp.name]
-  let ret = [{'text': v_comp.name, 'highlight': 'Identifier'}, {'text': '('}]
+  let ret = [
+        \ {
+        \  'text': v_comp.name,
+        \  'highlight': g:echodoc#highlight_identifier
+        \ },
+        \ {'text': '('}]
   let l = max([comp.pos, len(v_comp.args)])
 
   for i in range(l)
@@ -47,7 +52,7 @@ function! s:default.search(cur_text, filetype) abort "{{{
     endif
 
     if i == comp.pos - 1 || (i == 0 && comp.pos == 0)
-      let item.highlight = 'Special'
+      let item.highlight = g:echodoc#highlight_arguments
       let item.i = i
     endif
 

@@ -9,7 +9,9 @@ if exists('g:loaded_echodoc')
 endif
 
 " Global options definition. "{{{
-if exists('g:echodoc_enable_at_startup') && g:echodoc_enable_at_startup
+let g:echodoc#enable_at_startup = get(g:, 'echodoc#enable_at_startup',
+      \ get(g:, 'echodoc_enable_at_startup', 0))
+if g:echodoc#enable_at_startup
   " Enable startup.
   augroup echodoc
     autocmd!

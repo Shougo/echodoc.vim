@@ -27,5 +27,6 @@ function! s:doc_dict.search(cur_text) abort
     return []
   endif
 
-  return [{ 'text' : id, 'highlight' : 'Identifier' }, {'text': doc}]
+  return [{ 'text' : id, 'highlight' : g:echodoc#highlight_identifier },
+        \ {'text': doc}]
 endfunction

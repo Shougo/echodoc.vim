@@ -7,6 +7,11 @@
 " Variables  "{{{
 let s:echodoc_dicts = [ echodoc#default#get() ]
 let s:is_enabled = 0
+
+let g:echodoc#highlight_identifier = get(g:,
+      \ 'echodoc#highlight_identifier', 'Identifier')
+let g:echodoc#highlight_arguments = get(g:,
+      \ 'echodoc#highlight_arguments', 'Special')
 "}}}
 
 function! echodoc#enable() abort "{{{
