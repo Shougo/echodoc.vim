@@ -111,6 +111,10 @@ function! echodoc#util#parse_funcs(text) abort
     return []
   endif
 
+  " Function pointer pattern.
+  " Example: int32_t get(void *const, const size_t)
+  let text = substitute(a:text, '\s*(\*)\s*', '', 'g')
+
   let quote_i = -1
   let stack = []
   let open_stack = []
@@ -121,23 +125,23 @@ function! echodoc#util#parse_funcs(text) abort
   " Parenthesis is an exception since it's used for functions and can have a
   " depth of 1.
   let pairs = '({[)}]'
-  let l = len(a:text) - 1
+  let l = len(text) - 1
   let i = -1
 
   while i < l
     let i += 1
-    let c = a:text[i]
+    let c = text[i]
 
-    if i > 0 && a:text[i - 1] == '\'
+    if i > 0 && text[i - 1] == '\'
       continue
     endif
 
     if quote_i != -1
       " For languages that allow '''' ?
-      " if c == "'" && a:text[i - 1] == c && i - quote_i > 1
+      " if c == "'" && text[i - 1] == c && i - quote_i > 1
       "   continue
       " endif
-      if c == a:text[quote_i]
+      if c == text[quote_i]
         let quote_i = -1
       endif
       continue
@@ -163,14 +167,14 @@ function! echodoc#util#parse_funcs(text) abort
           let item.pos = -1
           let item.opens[0] -= 1
           if comma <= i
-            call add(item.args, a:text[comma :i - 1])
+            call add(item.args, text[comma :i - 1])
           endif
           let comma = item.i
         endif
       elseif p == 0
         " Opening parenthesis
-        let func_i = match(a:text[:i - 1], '\S', comma)
-        let func_name = matchstr(a:text[func_i :i - 1], '\k\+$')
+        let func_i = match(text[:i - 1], '\S', comma)
+        let func_name = matchstr(text[func_i :i - 1], '\k\+$')
 
         if func_i != -1 && func_i < i - 1 && func_name != ''
           let ppos = 0
@@ -206,7 +210,7 @@ function! echodoc#util#parse_funcs(text) abort
       " Not nested in a pair.
       if len(open_stack) && comma <= i
         let open_stack[-1].pos += 1
-        call add(open_stack[-1].args, a:text[comma :i - 1])
+        call add(open_stack[-1].args, text[comma :i - 1])
       endif
       let comma = i + 1
     endif
@@ -214,13 +218,13 @@ function! echodoc#util#parse_funcs(text) abort
 
   if len(open_stack)
     let item = open_stack[-1]
-    call add(item.args, a:text[comma :l])
+    call add(item.args, text[comma :l])
     let item.pos += 1
   endif
 
   if len(stack) && stack[-1].opens[0] == 0
     let item = stack[-1]
-    let item.trailing = matchstr(a:text, '\s*\zs\p*', item.end + 2)
+    let item.trailing = matchstr(text, '\s*\zs\p*', item.end + 2)
   endif
 
   return stack
