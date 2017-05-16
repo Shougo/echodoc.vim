@@ -77,12 +77,16 @@ function! echodoc#default#get() abort "{{{
   return s:default
 endfunction"}}}
 
-function! echodoc#default#make_cache(filetype) abort "{{{
+function! echodoc#default#get_cache(filetype) abort "{{{
   if !has_key(s:complete_cache, a:filetype)
     let s:complete_cache[a:filetype] = {}
   endif
 
-  let cache = s:complete_cache[a:filetype]
+  return s:complete_cache[a:filetype]
+endfunction"}}}
+
+function! echodoc#default#make_cache(filetype) abort "{{{
+  let cache = echodoc#default#get_cache(a:filetype)
 
   let v_comp = echodoc#util#completion_signature(
         \ v:completed_item, &columns - 1, a:filetype)

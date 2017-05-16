@@ -39,7 +39,7 @@ function! echodoc#util#get_func_text() abort
   let max_blank = max([1, get(b:, 'echodoc_max_blank_lines',
         \ get(g:, 'echodoc_max_blank_lines', 1))])
 
-  while l1 > 0 && line_guard < 50 && blank < max_blank
+  while l1 > 0 && line_guard < 5 && blank < max_blank
     if c1 <= 0
       let l1 -= 1
       let c1 = col([l1, '$'])

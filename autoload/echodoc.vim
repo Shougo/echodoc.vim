@@ -101,6 +101,10 @@ function! s:_on_cursor_moved(timer) abort  "{{{
         \ "empty(get(v:val, 'filetypes', {}))
         \  || get(v:val.filetypes, filetype, 0)")
 
+  if len(dicts) == 1 && empty(echodoc#default#get_cache(filetype))
+    return
+  endif
+
   " No function text was found
   if cur_text == '' && len(dicts) == 1
     if exists('b:echodoc')
