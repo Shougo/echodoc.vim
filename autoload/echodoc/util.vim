@@ -113,7 +113,9 @@ function! echodoc#util#parse_funcs(text) abort
 
   " Function pointer pattern.
   " Example: int32_t get(void *const, const size_t)
-  let text = substitute(a:text, '\s*(\*)\s*', '', 'g')
+  let text = a:text
+  let text = substitute(text, '\s*(\*)\s*', '', 'g')
+  let text = substitute(text, '^(\(.*\))$', '\1', '')
 
   let quote_i = -1
   let stack = []
