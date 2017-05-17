@@ -115,7 +115,7 @@ function! s:scan.multiline() abort
 
   Setup
   let b:echodoc_max_blank_lines = 100
-  let crs = repeat('<cr>aaa,', 49)
+  let crs = repeat('<cr>aaa,', 4)
   let nls = substitute(crs, '<cr>', "\n", 'g')
   call FeedScan('ixxx('.crs, 'xxx('.nls)
   call FeedScan('a<cr>', '')
