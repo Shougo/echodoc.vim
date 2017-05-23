@@ -87,7 +87,7 @@ function! echodoc#util#get_func_text() abort
     endif
   endwhile
 
-  if found && l1 > 0 && c1 > 0
+  if (found || last_quote != '') && l1 > 0 && c1 > 0
     let lines = getline(l1, l2)
     let lines[-1] = c2 == 0 ? '' : lines[-1][:c2 - 1]
     let lines[0] = c1 == 0 ? '' : matchstr(lines[0], '\k\+\%>'.(c1 - 1).'c.*')
