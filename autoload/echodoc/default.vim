@@ -12,7 +12,7 @@ let s:default = {
       \ }
 
 " @vimlint(EVL102, 1, v:completed_item)
-function! s:default.search(cur_text, filetype) abort "{{{
+function! s:default.search(cur_text, filetype) abort
   if a:filetype == ''
     return []
   endif
@@ -70,22 +70,22 @@ function! s:default.search(cur_text, filetype) abort "{{{
   endif
 
   return ret
-endfunction"}}}
+endfunction
 " @vimlint(EVL102, 0, v:completed_item)
 
-function! echodoc#default#get() abort "{{{
+function! echodoc#default#get() abort
   return s:default
-endfunction"}}}
+endfunction
 
-function! echodoc#default#get_cache(filetype) abort "{{{
+function! echodoc#default#get_cache(filetype) abort
   if !has_key(s:complete_cache, a:filetype)
     let s:complete_cache[a:filetype] = {}
   endif
 
   return s:complete_cache[a:filetype]
-endfunction"}}}
+endfunction
 
-function! echodoc#default#make_cache(filetype) abort "{{{
+function! echodoc#default#make_cache(filetype) abort
   let cache = echodoc#default#get_cache(a:filetype)
 
   let v_comp = echodoc#util#completion_signature(
@@ -106,6 +106,6 @@ function! echodoc#default#make_cache(filetype) abort "{{{
 
     let cache[v_comp.name] = v_comp
   endif
-endfunction"}}}
+endfunction
 
 " vim: foldmethod=marker

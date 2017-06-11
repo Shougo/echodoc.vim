@@ -4,17 +4,18 @@
 " License: MIT license
 "=============================================================================
 
-" Variables  "{{{
+" Variables
 let s:echodoc_dicts = [ echodoc#default#get() ]
 let s:is_enabled = 0
 
+let g:echodoc#type = get(g:,
+      \ 'echodoc#type', 'echo')
 let g:echodoc#highlight_identifier = get(g:,
       \ 'echodoc#highlight_identifier', 'Identifier')
 let g:echodoc#highlight_arguments = get(g:,
       \ 'echodoc#highlight_arguments', 'Special')
-"}}}
 
-function! echodoc#enable() abort "{{{
+function! echodoc#enable() abort
   if &showmode && &cmdheight < 2
     " Increase the cmdheight so user can clearly see the error
     set cmdheight=2
@@ -27,21 +28,21 @@ function! echodoc#enable() abort "{{{
     autocmd CompleteDone,CursorMovedI * call s:on_cursor_moved()
   augroup END
   let s:is_enabled = 1
-endfunction"}}}
-function! echodoc#disable() abort "{{{
+endfunction
+function! echodoc#disable() abort
   augroup echodoc
     autocmd!
   augroup END
   let s:is_enabled = 0
-endfunction"}}}
-function! echodoc#is_enabled() abort "{{{
+endfunction
+function! echodoc#is_enabled() abort
   return s:is_enabled
-endfunction"}}}
-function! echodoc#get(name) abort "{{{
+endfunction
+function! echodoc#get(name) abort
   return get(filter(s:echodoc_dicts,
         \ 'v:val.name ==#' . string(a:name)), 0, {})
-endfunction"}}}
-function! echodoc#register(name, dict) abort "{{{
+endfunction
+function! echodoc#register(name, dict) abort
   " Unregister previous dict.
   call echodoc#unregister(a:name)
 
@@ -49,16 +50,16 @@ function! echodoc#register(name, dict) abort "{{{
 
   " Sort.
   call sort(s:echodoc_dicts, 's:compare')
-endfunction"}}}
-function! echodoc#unregister(name) abort "{{{
+endfunction
+function! echodoc#unregister(name) abort
   call filter(s:echodoc_dicts, 'v:val.name !=#' . string(a:name))
-endfunction"}}}
+endfunction
 
 " Misc.
-function! s:compare(a1, a2) abort  "{{{
+function! s:compare(a1, a2) abort
   return a:a1.rank - a:a2.rank
-endfunction"}}}
-function! s:context_filetype_enabled() abort  "{{{
+endfunction
+function! s:context_filetype_enabled() abort
   if !exists('s:exists_context_filetype')
     try
       call context_filetype#version()
@@ -69,13 +70,13 @@ function! s:context_filetype_enabled() abort  "{{{
   endif
 
   return s:exists_context_filetype
-endfunction"}}}
-function! s:print_error(msg) abort  "{{{
+endfunction
+function! s:print_error(msg) abort
   echohl Error | echomsg '[echodoc] '  . a:msg | echohl None
-endfunction"}}}
+endfunction
 
 " Autocmd events.
-function! s:on_cursor_moved() abort  "{{{
+function! s:on_cursor_moved() abort
   if !has('timers')
     return s:_on_cursor_moved(0)
   endif
@@ -85,9 +86,9 @@ function! s:on_cursor_moved() abort  "{{{
   endif
 
   let s:_timer = timer_start(100, function('s:_on_cursor_moved'))
-endfunction"}}}
+endfunction
 " @vimlint(EVL103, 1, a:timer)
-function! s:_on_cursor_moved(timer) abort  "{{{
+function! s:_on_cursor_moved(timer) abort
   unlet! s:_timer
   let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
@@ -146,10 +147,7 @@ function! s:_on_cursor_moved(timer) abort  "{{{
       echon text.text
     endif
   endfor
-endfunction"}}}
+endfunction
 " @vimlint(EVL103, 0, a:timer)
 
 call echodoc#register('ruby', echodoc#ruby#get())
-
-" __END__
-" vim: foldmethod=marker

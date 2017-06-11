@@ -8,7 +8,7 @@ if exists('g:loaded_echodoc')
   finish
 endif
 
-" Global options definition. "{{{
+" Global options definition.
 let g:echodoc#enable_at_startup = get(g:, 'echodoc#enable_at_startup',
       \ get(g:, 'echodoc_enable_at_startup', 0))
 if g:echodoc#enable_at_startup
@@ -17,13 +17,9 @@ if g:echodoc#enable_at_startup
     autocmd!
     autocmd InsertEnter * call echodoc#enable()
   augroup END
-endif"}}}
-"}}}
+endif
 
 command! EchoDocEnable call echodoc#enable()
 command! EchoDocDisable call echodoc#disable()
 
 let g:loaded_echodoc = 1
-
-" __END__
-" vim: foldmethod=marker
