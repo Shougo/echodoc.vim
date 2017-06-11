@@ -26,6 +26,7 @@ function! echodoc#enable() abort
   augroup echodoc
     autocmd!
     autocmd CompleteDone,CursorMovedI * call s:on_cursor_moved()
+    autocmd InsertLeave * call s:on_insert_leave()
   augroup END
   let s:is_enabled = 1
 endfunction
@@ -37,6 +38,10 @@ function! echodoc#disable() abort
 endfunction
 function! echodoc#is_enabled() abort
   return s:is_enabled
+endfunction
+function! echodoc#is_signature() abort
+  return g:echodoc#type ==# 'signature'
+        \ && has('nvim') && get(g:, 'gonvim_running', 0)
 endfunction
 function! echodoc#get(name) abort
   return get(filter(s:echodoc_dicts,
@@ -109,10 +114,12 @@ function! s:_on_cursor_moved(timer) abort
   " No function text was found
   if cur_text == '' && len(dicts) == 1
     if exists('b:echodoc')
-      " Clear command line message if there was segnature cached
-      echo ''
-      " Clear cached signature
-      unlet! b:echodoc
+      if !echodoc#is_signature()
+        " Clear command line message if there was segnature cached
+        echo ''
+        " Clear cached signature
+        unlet! b:echodoc
+      endif
     endif
     return
   endif
@@ -137,17 +144,43 @@ function! s:_on_cursor_moved(timer) abort
     endif
   endfor
 
-  echo ''
-  for text in echodoc
-    if has_key(text, 'highlight')
-      execute 'echohl' text.highlight
-      echon text.text
-      echohl None
-    else
-      echon text.text
+  " Display
+  if echodoc#is_signature()
+    let parse = echodoc#util#parse_funcs(getline('.'))
+    if empty(parse)
+      return
     endif
-  endfor
+    let col = parse[-1].start - 3
+    let idx = 0
+    let text = ''
+    let line = (winline() <= 1) ?
+          \ winline() - winheight(0) : winline() - winheight(0) - 2
+    for doc in echodoc
+      let text .= doc.text
+      if has_key(doc, 'i')
+        let idx = doc.i
+      endif
+    endfor
+    call rpcnotify(0, 'Gui', 'signature_show', text, [line, col], idx)
+    redraw!
+  else
+    echo ''
+    for doc in echodoc
+      if has_key(doc, 'highlight')
+        execute 'echohl' doc.highlight
+        echon doc.text
+        echohl None
+      else
+        echon doc.text
+      endif
+    endfor
+  endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
+function! s:on_insert_leave() abort
+  if echodoc#is_signature()
+    call rpcnotify(0, 'Gui', 'signature_hide')
+  endif
+endfunction
 
 call echodoc#register('ruby', echodoc#ruby#get())

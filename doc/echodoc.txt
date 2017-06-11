@@ -71,9 +71,6 @@ g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 		|echodoc| is automatically enabled at startup.
 		The default value is 0.
 
-g:echodoc_enable_at_startup			*g:echodoc_enable_at_startup*
-		It is deprecated variable name.
-
 g:echodoc#highlight_identifier		*g:echodoc#highlight_identifier*
 		The highlight of identifier.
 
@@ -83,6 +80,13 @@ g:echodoc#highlight_arguments		*g:echodoc#highlight_arguments*
 		The highlight of current argument.
 
 		Default: "Special"
+
+g:echodoc#type				*g:echodoc#type*
+		The documentation display type.
+		"echo": It uses the command line |:echo|.
+		"signature": It uses gonvim signature feature.
+
+		Default: "echo"
 
 ------------------------------------------------------------------------------
 FUNCTIONS 					*echodoc-functions*
