@@ -98,6 +98,9 @@ function! s:_on_cursor_moved(timer) abort
   let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
+  if filetype == ''
+    let filetype = 'nothing'
+  endif
 
   if filetype != '' && !empty(get(v:, 'completed_item', {}))
     call echodoc#default#make_cache(filetype)
