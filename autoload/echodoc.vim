@@ -116,13 +116,11 @@ function! s:_on_cursor_moved(timer) abort
 
   " No function text was found
   if cur_text == '' && len(dicts) == 1
-    if exists('b:echodoc')
-      if !echodoc#is_signature()
-        " Clear command line message if there was segnature cached
-        echo ''
-        " Clear cached signature
-        unlet! b:echodoc
-      endif
+    if exists('b:echodoc') && !echodoc#is_signature()
+      " Clear command line message if there was segnature cached
+      echo ''
+      " Clear cached signature
+      unlet! b:echodoc
     endif
     return
   endif
@@ -177,6 +175,7 @@ function! s:_on_cursor_moved(timer) abort
         echon doc.text
       endif
     endfor
+    let s:echodoc_echo = 1
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
