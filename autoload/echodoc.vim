@@ -129,7 +129,6 @@ function! s:_on_cursor_moved(timer) abort
     let b:echodoc = []
   endif
 
-  let echodoc = b:echodoc
   for doc_dict in dicts
     if doc_dict.name ==# 'default'
       let ret = doc_dict.search(cur_text, filetype)
@@ -140,10 +139,30 @@ function! s:_on_cursor_moved(timer) abort
     if !empty(ret)
       " Overwrite cached result
       let b:echodoc = ret
-      let echodoc = ret
       break
     endif
   endfor
+
+  if !empty(b:echodoc)
+    call s:display()
+  endif
+endfunction
+" @vimlint(EVL103, 0, a:timer)
+function! s:on_insert_leave() abort
+  if echodoc#is_signature()
+    call rpcnotify(0, 'Gui', 'signature_hide')
+  endif
+endfunction
+
+function! s:display() abort
+  " Text check
+  let text = ''
+  for doc in b:echodoc
+    let text .= doc.text
+  endfor
+  if matchstr(text, '^\s*$')
+    return
+  endif
 
   " Display
   if echodoc#is_signature()
@@ -156,7 +175,7 @@ function! s:_on_cursor_moved(timer) abort
     let text = ''
     let line = (winline() <= 1) ?
           \ winline() - winheight(0) : winline() - winheight(0) - 2
-    for doc in echodoc
+    for doc in b:echodoc
       let text .= doc.text
       if has_key(doc, 'i')
         let idx = doc.i
@@ -166,7 +185,7 @@ function! s:_on_cursor_moved(timer) abort
     redraw!
   else
     echo ''
-    for doc in echodoc
+    for doc in b:echodoc
       if has_key(doc, 'highlight')
         execute 'echohl' doc.highlight
         echon doc.text
@@ -175,13 +194,6 @@ function! s:_on_cursor_moved(timer) abort
         echon doc.text
       endif
     endfor
-    let s:echodoc_echo = 1
-  endif
-endfunction
-" @vimlint(EVL103, 0, a:timer)
-function! s:on_insert_leave() abort
-  if echodoc#is_signature()
-    call rpcnotify(0, 'Gui', 'signature_hide')
   endif
 endfunction
 
