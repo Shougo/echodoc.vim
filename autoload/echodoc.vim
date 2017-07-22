@@ -110,18 +110,20 @@ function! s:_on_cursor_moved(timer) abort
         \ "empty(get(v:val, 'filetypes', {}))
         \  || get(v:val.filetypes, filetype, 0)")
 
-  if len(dicts) == 1 && empty(echodoc#default#get_cache(filetype))
+  let defaut_only = len(dicts) == 1
+
+  if defaut_only && empty(echodoc#default#get_cache(filetype))
     return
   endif
 
   " No function text was found
-  if cur_text == '' && len(dicts) == 1
+  if cur_text == '' && defaut_only
     if exists('b:echodoc') && !echodoc#is_signature()
       " Clear command line message if there was segnature cached
       echo ''
       " Clear cached signature
-      unlet! b:echodoc
     endif
+    unlet! b:echodoc
     return
   endif
 
@@ -144,7 +146,7 @@ function! s:_on_cursor_moved(timer) abort
   endfor
 
   if !empty(b:echodoc)
-    call s:display()
+    call s:display(b:echodoc)
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
@@ -154,10 +156,10 @@ function! s:on_insert_leave() abort
   endif
 endfunction
 
-function! s:display() abort
+function! s:display(echodoc) abort
   " Text check
   let text = ''
-  for doc in b:echodoc
+  for doc in a:echodoc
     let text .= doc.text
   endfor
   if matchstr(text, '^\s*$')
