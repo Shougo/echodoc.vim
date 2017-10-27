@@ -118,17 +118,13 @@ function! s:_on_cursor_moved(timer) abort
 
   " No function text was found
   if cur_text == '' && defaut_only
-    if exists('b:echodoc') && !echodoc#is_signature()
-      " Clear command line message if there was segnature cached
-      echo ''
-      " Clear cached signature
-    endif
     unlet! b:echodoc
     return
   endif
 
   if !exists('b:echodoc')
     let b:echodoc = []
+    let b:prev_echodoc = []
   endif
 
   for doc_dict in dicts
@@ -154,6 +150,12 @@ function! s:on_insert_leave() abort
   if echodoc#is_signature()
     call rpcnotify(0, 'Gui', 'signature_hide')
   endif
+
+  if exists('b:echodoc') && !echodoc#is_signature()
+    " Clear command line message if there was segnature cached
+    echo ''
+    " Clear cached signature
+  endif
 endfunction
 
 function! s:display(echodoc) abort
@@ -162,7 +164,7 @@ function! s:display(echodoc) abort
   for doc in a:echodoc
     let text .= doc.text
   endfor
-  if matchstr(text, '^\s*$')
+  if matchstr(text, '^\s*$') || b:prev_echodoc == b:echodoc
     return
   endif
 
@@ -197,6 +199,8 @@ function! s:display(echodoc) abort
       endif
     endfor
   endif
+
+  let b:prev_echodoc = b:echodoc
 endfunction
 
 call echodoc#register('ruby', echodoc#ruby#get())
