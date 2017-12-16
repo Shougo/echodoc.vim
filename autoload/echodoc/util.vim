@@ -53,6 +53,10 @@ function! echodoc#util#get_func_text() abort
       continue
     endif
 
+    if len(text) >= &l:columns
+      break
+    endif
+
     let [c1, c] = s:mbprevchar(text, c1)
     let p = ''
 
