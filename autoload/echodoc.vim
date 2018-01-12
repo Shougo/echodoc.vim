@@ -174,7 +174,7 @@ function! s:display(echodoc) abort
     if empty(parse)
       return
     endif
-    let col = -(col('.')  =  parse[-1].start + 1)
+    let col = -(col('.') - parse[-1].start + 1)
     let idx = 0
     let text = ''
     let line = (winline() <= 2) ? 3 : -1
