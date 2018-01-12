@@ -85,6 +85,7 @@ g:echodoc#type				*g:echodoc#type*
 		The documentation display type.
 		"echo": It uses the command line |:echo|.
 		"signature": It uses gonvim signature feature.
+		https://github.com/dzhou121/gonvim
 
 		Default: "echo"
 
