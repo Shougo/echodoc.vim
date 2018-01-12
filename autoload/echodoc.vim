@@ -174,11 +174,10 @@ function! s:display(echodoc) abort
     if empty(parse)
       return
     endif
-    let col = parse[-1].start - 3
+    let col = -(col('.')  =  parse[-1].start + 1)
     let idx = 0
     let text = ''
-    let line = (winline() <= 1) ?
-          \ winline() - winheight(0) : winline() - winheight(0) - 2
+    let line = (winline() <= 2) ? 3 : -1
     for doc in b:echodoc
       let text .= doc.text
       if has_key(doc, 'i')
