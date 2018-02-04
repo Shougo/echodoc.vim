@@ -250,13 +250,14 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
 
   let info = ''
 
-  if a:completion.info =~# '^.\+('
+  if get(a:completion, 'info', '') =~# '^.\+('
     let info = matchstr(a:completion.info, '^\_s*\zs.*')
-  elseif a:completion.abbr =~# '^.\+('
+  elseif get(a:completion, 'abbr', '') =~# '^.\+('
     let info = a:completion.abbr
-  elseif a:completion.menu =~# '^.\+('
+  elseif get(a:completion, 'menu', '') =~# '^.\+('
     let info = a:completion.menu
-  elseif a:completion.word =~# '^.\+(' || a:completion.kind == 'f'
+  elseif a:completion.word =~# '^.\+('
+        \ || get(a:completion, 'kind', '') == 'f'
     let info = a:completion.word
   endif
 

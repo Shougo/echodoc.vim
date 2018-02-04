@@ -88,9 +88,17 @@ endfunction
 function! echodoc#default#make_cache(filetype) abort
   let cache = echodoc#default#get_cache(a:filetype)
 
-  let v_comp = echodoc#util#completion_signature(
-        \ v:completed_item, &columns - 1, a:filetype)
-  if !empty(v_comp)
+  let candidates = [v:completed_item]
+  if exists('g:deoplete#_prev_completion')
+    let candidates += g:deoplete#_prev_completion.candidates
+  endif
+  for candidate in candidates
+    let v_comp = echodoc#util#completion_signature(
+          \ candidate, &columns - 1, a:filetype)
+    if empty(v_comp)
+      continue
+    endif
+
     if a:filetype ==# 'vim'
       let args = []
       for i in range(len(v_comp.args))
@@ -105,7 +113,7 @@ function! echodoc#default#make_cache(filetype) abort
     endif
 
     let cache[v_comp.name] = v_comp
-  endif
+  endfor
 endfunction
 
 " vim: foldmethod=marker
