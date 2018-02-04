@@ -44,7 +44,7 @@ function! echodoc#util#get_func_text() abort
       let l1 -= 1
       let c1 = col([l1, '$'])
       let text = getline(l1)
-      if len(text) == 0
+      if text ==# ''
         let blank += 1
       else
         let blank = 0
@@ -110,7 +110,7 @@ endfunction
 " - pos: The argument position.  1-indexed, 0 = no args, -1 = closed.
 " - ppos: The function's position in the previous function in the stack.
 " - args: A list of arguments.
-function! echodoc#util#parse_funcs(text) abort
+function! echodoc#util#parse_funcs(text, filetype) abort
   if a:text == ''
     return []
   endif
@@ -167,7 +167,7 @@ function! echodoc#util#parse_funcs(text) abort
       let ci = p % 3
       if p == 3 && opened == 1 && prev.opens[0] == 1
         " Closing the function parenthesis
-        if len(open_stack)
+        if !empty(open_stack)
           let item = remove(open_stack, -1)
           let item.end = i - 1
           let item.pos = -1
@@ -184,7 +184,7 @@ function! echodoc#util#parse_funcs(text) abort
 
         if func_i != -1 && func_i < i - 1 && func_name != ''
           let ppos = 0
-          if len(open_stack)
+          if !empty(open_stack)
             let ppos = open_stack[-1].pos
           endif
 
@@ -214,7 +214,7 @@ function! echodoc#util#parse_funcs(text) abort
       endif
     elseif opened == 1 && prev.opens[0] == 1 && c == ','
       " Not nested in a pair.
-      if len(open_stack) && comma <= i
+      if !empty(open_stack) && comma <= i
         let open_stack[-1].pos += 1
         call add(open_stack[-1].args, text[comma :i - 1])
       endif
@@ -222,13 +222,19 @@ function! echodoc#util#parse_funcs(text) abort
     endif
   endwhile
 
-  if len(open_stack)
+  if !empty(open_stack)
     let item = open_stack[-1]
     call add(item.args, text[comma :l])
     let item.pos += 1
   endif
 
-  if len(stack) && stack[-1].opens[0] == 0
+  if a:filetype ==# 'python'
+    for item in open_stack
+      call filter(item.args, "v:val !=# 'self'")
+    endfor
+  endif
+
+  if !empty(stack) && stack[-1].opens[0] == 0
     let item = stack[-1]
     let item.trailing = matchstr(text, '\s*\zs\p*', item.end + 2)
   endif
@@ -255,7 +261,7 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
   endif
 
   let info = info[:a:maxlen]
-  let stack = echodoc#util#parse_funcs(info)
+  let stack = echodoc#util#parse_funcs(info, a:filetype)
 
   if empty(stack)
     return {}

@@ -24,7 +24,7 @@ function! s:default.search(cur_text, filetype) abort
   let cache = s:complete_cache[a:filetype]
   let comp = {}
 
-  for comp in reverse(echodoc#util#parse_funcs(a:cur_text))
+  for comp in reverse(echodoc#util#parse_funcs(a:cur_text, a:filetype))
     if comp.end == -1
       break
     endif

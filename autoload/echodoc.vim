@@ -142,7 +142,7 @@ function! s:_on_cursor_moved(timer) abort
   endfor
 
   if !empty(b:echodoc)
-    call s:display(b:echodoc)
+    call s:display(b:echodoc, filetype)
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
@@ -158,7 +158,7 @@ function! s:on_insert_leave() abort
   endif
 endfunction
 
-function! s:display(echodoc) abort
+function! s:display(echodoc, filetype) abort
   " Text check
   let text = ''
   for doc in a:echodoc
@@ -170,7 +170,7 @@ function! s:display(echodoc) abort
 
   " Display
   if echodoc#is_signature()
-    let parse = echodoc#util#parse_funcs(getline('.'))
+    let parse = echodoc#util#parse_funcs(getline('.'), a:filetype)
     if empty(parse)
       return
     endif
