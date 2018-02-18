@@ -248,21 +248,29 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
     return {}
   endif
 
-  let info = ''
-
-  if get(a:completion, 'info', '') =~# '^.\+('
-    let info = matchstr(a:completion.info, '^\_s*\zs.*')
-  elseif get(a:completion, 'abbr', '') =~# '^.\+('
-    let info = a:completion.abbr
-  elseif get(a:completion, 'menu', '') =~# '^.\+('
-    let info = a:completion.menu
-  elseif a:completion.word =~# '^.\+('
-        \ || get(a:completion, 'kind', '') == 'f'
-    let info = a:completion.word
+  let item = a:completion
+  let abbrs = []
+  if get(item, 'info', '') =~# '^.\+('
+    call add(abbrs, matchstr(item.info, '^\_s*\zs.*'))
+  endif
+  if get(item, 'abbr', '') =~# '^.\+('
+    call add(abbrs, item.abbr)
+  endif
+  if get(item, 'menu', '') =~# '^.\+('
+    call add(abbrs, item.menu)
+  endif
+  if item.word =~# '^.\+(' || get(item, 'kind', '') == 'f'
+    call add(abbrs, item.word)
   endif
 
-  let info = info[:a:maxlen]
-  let stack = echodoc#util#parse_funcs(info, a:filetype)
+  let stack = []
+  for info in abbrs
+    let info = info[:a:maxlen]
+    let stack = echodoc#util#parse_funcs(info, a:filetype)
+    if !empty(stack)
+      break
+    endif
+  endfor
 
   if empty(stack)
     return {}
