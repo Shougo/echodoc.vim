@@ -278,7 +278,7 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
 
   let comp = stack[0]
   let word = matchstr(a:completion.word, '\k\+')
-  if comp.name !=# word && a:filetype != 'elixir'
+  if comp.name !=# word && a:filetype !=# 'elixir'
     " Completion 'word' is what actually completed, if the parsed name is
     " different, it's probably because 'info' is an abstract function
     " signature.  .e.g in Go:
