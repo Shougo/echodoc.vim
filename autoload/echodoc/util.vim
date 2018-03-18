@@ -277,7 +277,7 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
   endif
 
   let comp = stack[0]
-  let word = matchstr(a:completion.word, '\k\+')
+  let word = matchstr(a:completion.word, '\k\+\ze[()]*$')
   if comp.name !=# word
     " Completion 'word' is what actually completed, if the parsed name is
     " different, it's probably because 'info' is an abstract function
