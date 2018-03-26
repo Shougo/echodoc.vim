@@ -14,6 +14,8 @@ let g:echodoc#highlight_identifier = get(g:,
       \ 'echodoc#highlight_identifier', 'Identifier')
 let g:echodoc#highlight_arguments = get(g:,
       \ 'echodoc#highlight_arguments', 'Special')
+let g:echodoc#enable_force_overwrite = get(g:,
+      \ 'echodoc#enable_force_overwrite', 0)
 
 function! echodoc#enable() abort
   if &showmode && &cmdheight < 2
@@ -164,7 +166,8 @@ function! s:display(echodoc, filetype) abort
   for doc in a:echodoc
     let text .= doc.text
   endfor
-  if matchstr(text, '^\s*$') || b:prev_echodoc == b:echodoc
+  if matchstr(text, '^\s*$') ||
+        \ (!g:echodoc#enable_force_overwrite && b:prev_echodoc == b:echodoc)
     return
   endif
 
