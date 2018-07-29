@@ -94,7 +94,7 @@ function! echodoc#default#make_cache(filetype) abort
   endif
   for candidate in candidates
     let v_comp = echodoc#util#completion_signature(
-          \ candidate, &columns - 1, a:filetype)
+          \ candidate, &columns * &cmdheight - 1, a:filetype)
     if empty(v_comp)
       continue
     endif
