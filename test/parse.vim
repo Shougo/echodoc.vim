@@ -9,4 +9,7 @@ function! s:suite.parse_funcs() abort
         \ 'void main(int argc)', ''), [])
   call s:assert.not_equals(echodoc#util#parse_funcs(
         \ 'int32_t get (*)(void *const, const size_t)', ''), [])
+  let args = echodoc#util#parse_funcs(
+        \ 'void process(std::array<T,size> array){...}', '')[0]['args']
+  call s:assert.equals(args, ['std::array<...> array'])
 endfunction
