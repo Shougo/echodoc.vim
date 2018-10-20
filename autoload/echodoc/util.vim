@@ -67,6 +67,11 @@ function! echodoc#util#get_func_text() abort
       endif
     endif
 
+    if c =~# '\s'
+      " Skip
+      continue
+    endif
+
     if last_quote == '' && (c == "'" || c == '"' || c == '`')
       let last_quote = c
       continue
@@ -79,7 +84,7 @@ function! echodoc#util#get_func_text() abort
 
     if c == '('
       if skip == 0
-        if p =~# '\k'
+        if p =~# '\k\|\s'
           let found = 1
           break
         endif
@@ -121,6 +126,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   " Example: int32_t get(void *const, const size_t)
   let text = substitute(text, '\s*(\*)\s*', '', 'g')
   let text = substitute(text, '^(\(.*\))$', '\1', '')
+  let text = substitute(text, '\s\+\ze(', '', '')
 
   " Template arguments pattern.
   let text = substitute(text, '<\zs[^>]*\ze>', '...', 'g')
