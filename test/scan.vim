@@ -53,7 +53,7 @@ function! s:scan.non_func_paren() abort
   Teardown
 
   Setup
-  call FeedScan('ixxx ((', '')
+  call FeedScan('ixxx ((', 'xxx ((')
   Teardown
 endfunction
 
