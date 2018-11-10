@@ -66,7 +66,10 @@ function! s:default.search(cur_text, filetype) abort
   call add(ret, {'text': ')'})
 
   if has_key(v_comp, 'trailing') && !empty(v_comp.trailing)
-    call add(ret, {'text': ' -> '.v_comp.trailing})
+    call add(ret, {
+          \ 'text': v_comp.trailing,
+          \ 'highlight': g:echodoc#highlight_trailing
+          \ })
   endif
 
   return ret

@@ -14,6 +14,8 @@ let g:echodoc#highlight_identifier = get(g:,
       \ 'echodoc#highlight_identifier', 'Identifier')
 let g:echodoc#highlight_arguments = get(g:,
       \ 'echodoc#highlight_arguments', 'Special')
+let g:echodoc#highlight_type = get(g:,
+      \ 'echodoc#highlight_type', 'Type')
 let g:echodoc#enable_force_overwrite = get(g:,
       \ 'echodoc#enable_force_overwrite', 0)
 

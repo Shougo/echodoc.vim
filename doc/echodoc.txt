@@ -92,6 +92,12 @@ g:echodoc#highlight_arguments
 
 		Default: "Special"
 
+g:echodoc#highlight_trailing
+						*g:echodoc#highlight_trailing*
+		The highlight of trailing.
+
+		Default: "Type"
+
 g:echodoc#type				*g:echodoc#type*
 		The documentation display type.
 		"echo": It uses the command line |:echo|.
