@@ -21,7 +21,7 @@ let g:echodoc#enable_force_overwrite = get(g:,
       \ 'echodoc#enable_force_overwrite', 0)
 
 function! echodoc#enable() abort
-  if &showmode && &cmdheight < 2
+  if &showmode && &cmdheight < 2 && echodoc#is_echo()
     " Increase the cmdheight so user can clearly see the error
     set cmdheight=2
     call s:print_error('Your cmdheight is too small. '
@@ -43,6 +43,9 @@ function! echodoc#disable() abort
 endfunction
 function! echodoc#is_enabled() abort
   return s:is_enabled
+endfunction
+function! echodoc#is_echo() abort
+  return !echodoc#is_signature() && !echodoc#is_virtual()
 endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
@@ -163,7 +166,7 @@ function! s:on_insert_leave() abort
     call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
   endif
 
-  if exists('b:echodoc') && !echodoc#is_signature()
+  if exists('b:echodoc') && echodoc#is_echo()
     " Clear command line message if there was segnature cached
     echo ''
     " Clear cached signature
