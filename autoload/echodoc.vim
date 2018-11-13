@@ -7,6 +7,7 @@
 " Variables
 let s:echodoc_dicts = [ echodoc#default#get() ]
 let s:is_enabled = 0
+let s:echodoc_id = 1050
 
 let g:echodoc#type = get(g:,
       \ 'echodoc#type', 'echo')
@@ -46,6 +47,9 @@ endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
         \ && has('nvim') && get(g:, 'gonvim_running', 0)
+endfunction
+function! echodoc#is_virtual() abort
+  return g:echodoc#type ==# 'virtual' && exists('*nvim_buf_set_virtual_text')
 endfunction
 function! echodoc#get(name) abort
   return get(filter(s:echodoc_dicts,
@@ -155,6 +159,10 @@ function! s:on_insert_leave() abort
     call rpcnotify(0, 'Gui', 'signature_hide')
   endif
 
+  if echodoc#is_virtual()
+    call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
+  endif
+
   if exists('b:echodoc') && !echodoc#is_signature()
     " Clear command line message if there was segnature cached
     echo ''
@@ -191,6 +199,12 @@ function! s:display(echodoc, filetype) abort
     endfor
     call rpcnotify(0, 'Gui', 'signature_show', text, [line, col], idx)
     redraw!
+  elseif echodoc#is_virtual()
+    call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
+    let chunks = map(b:echodoc,
+          \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
+    call nvim_buf_set_virtual_text(
+          \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
   else
     echo ''
     for doc in b:echodoc

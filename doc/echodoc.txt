@@ -103,6 +103,8 @@ g:echodoc#type				*g:echodoc#type*
 		"echo": It uses the command line |:echo|.
 		"signature": It uses gonvim signature feature.
 		https://github.com/dzhou121/gonvim
+		"virtual": It uses neovim virtual text feature.
+		|nvim_buf_set_virtual_text()|
 
 		Default: "echo"
 
