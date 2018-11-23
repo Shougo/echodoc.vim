@@ -204,7 +204,7 @@ function! s:display(echodoc, filetype) abort
     redraw!
   elseif echodoc#is_virtual()
     call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
-    let chunks = map(b:echodoc,
+    let chunks = map(copy(b:echodoc),
           \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
     call nvim_buf_set_virtual_text(
           \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
