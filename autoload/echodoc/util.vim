@@ -260,7 +260,7 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
 
   let item = a:completion
   let abbrs = []
-  if has_key(item, 'user_data')
+  if get(item, 'user_data', '') !=# ''
     let user_data = json_decode(item.user_data)
     if type(user_data) == v:t_dict && has_key(user_data, 'signature')
       call add(abbrs, user_data.signature)
@@ -275,7 +275,7 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
   if get(item, 'menu', '') =~# '^.\+('
     call add(abbrs, item.menu)
   endif
-  if item.word =~# '^.\+(' || get(item, 'kind', '') == 'f'
+  if item.word =~# '^.\+(' || get(item, 'kind', '') ==# 'f'
     call add(abbrs, item.word)
   endif
 
