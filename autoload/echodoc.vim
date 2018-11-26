@@ -7,7 +7,11 @@
 " Variables
 let s:echodoc_dicts = [ echodoc#default#get() ]
 let s:is_enabled = 0
-let s:echodoc_id = 1050
+if exists('*nvim_create_namespace')
+  let s:echodoc_id = nvim_create_namespace('echodoc.vim')
+else
+  let s:echodoc_id = nvim_buf_add_highlight(0, 0, "", 0, 0, 0)
+endif
 
 let g:echodoc#type = get(g:,
       \ 'echodoc#type', 'echo')
