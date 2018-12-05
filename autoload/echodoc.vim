@@ -168,7 +168,7 @@ function! s:on_insert_leave() abort
   endif
 
   if echodoc#is_virtual()
-    call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
+    call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   endif
 
   if exists('b:echodoc') && echodoc#is_echo()
@@ -208,7 +208,7 @@ function! s:display(echodoc, filetype) abort
     call rpcnotify(0, 'Gui', 'signature_show', text, [line, col], idx)
     redraw!
   elseif echodoc#is_virtual()
-    call nvim_buf_clear_highlight(bufnr('%'), s:echodoc_id, 0, -1)
+    call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
     let chunks = map(copy(b:echodoc),
           \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
     call nvim_buf_set_virtual_text(
