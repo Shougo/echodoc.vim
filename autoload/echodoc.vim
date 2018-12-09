@@ -228,5 +228,3 @@ function! s:display(echodoc, filetype) abort
 
   let b:prev_echodoc = b:echodoc
 endfunction
-
-call echodoc#register('ruby', echodoc#ruby#get())
