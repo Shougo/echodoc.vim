@@ -35,7 +35,8 @@ function! echodoc#enable() abort
 
   augroup echodoc
     autocmd!
-    autocmd CompleteDone,CursorMovedI * call s:on_cursor_moved()
+    autocmd InsertEnter,CompleteDone,CursorMovedI
+          \ * call s:on_cursor_moved()
     autocmd InsertLeave * call s:on_insert_leave()
   augroup END
   let s:is_enabled = 1
