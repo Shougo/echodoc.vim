@@ -22,8 +22,6 @@ let g:echodoc#highlight_arguments = get(g:,
       \ 'echodoc#highlight_arguments', 'Special')
 let g:echodoc#highlight_trailing = get(g:,
       \ 'echodoc#highlight_trailing', 'Type')
-let g:echodoc#enable_force_overwrite = get(g:,
-      \ 'echodoc#enable_force_overwrite', 0)
 
 function! echodoc#enable() abort
   if &showmode && &cmdheight < 2 && echodoc#is_echo()
@@ -135,15 +133,10 @@ function! s:_on_cursor_moved(timer) abort
 
   " No function text was found
   if cur_text == '' && defaut_only
-    unlet! b:echodoc
     return
   endif
 
-  if !exists('b:echodoc')
-    let b:echodoc = []
-    let b:prev_echodoc = []
-  endif
-
+  let echodoc = {}
   for doc_dict in dicts
     if doc_dict.name ==# 'default'
       let ret = doc_dict.search(cur_text, filetype)
@@ -153,13 +146,13 @@ function! s:_on_cursor_moved(timer) abort
 
     if !empty(ret)
       " Overwrite cached result
-      let b:echodoc = ret
+      let echodoc = ret
       break
     endif
   endfor
 
-  if !empty(b:echodoc)
-    call s:display(b:echodoc, filetype)
+  if !empty(echodoc)
+    call s:display(echodoc, filetype)
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
@@ -171,12 +164,6 @@ function! s:on_insert_leave() abort
   if echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   endif
-
-  if exists('b:echodoc') && echodoc#is_echo()
-    " Clear command line message if there was segnature cached
-    echo ''
-    " Clear cached signature
-  endif
 endfunction
 
 function! s:display(echodoc, filetype) abort
@@ -185,8 +172,7 @@ function! s:display(echodoc, filetype) abort
   for doc in a:echodoc
     let text .= doc.text
   endfor
-  if matchstr(text, '^\s*$') ||
-        \ (!g:echodoc#enable_force_overwrite && b:prev_echodoc == b:echodoc)
+  if matchstr(text, '^\s*$')
     return
   endif
 
@@ -200,7 +186,7 @@ function! s:display(echodoc, filetype) abort
     let idx = 0
     let text = ''
     let line = (winline() <= 2) ? 3 : -1
-    for doc in b:echodoc
+    for doc in a:echodoc
       let text .= doc.text
       if has_key(doc, 'i')
         let idx = doc.i
@@ -210,13 +196,13 @@ function! s:display(echodoc, filetype) abort
     redraw!
   elseif echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
-    let chunks = map(copy(b:echodoc),
+    let chunks = map(copy(a:echodoc),
           \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
     call nvim_buf_set_virtual_text(
           \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
   else
     echo ''
-    for doc in b:echodoc
+    for doc in a:echodoc
       if has_key(doc, 'highlight')
         execute 'echohl' doc.highlight
         echon doc.text
@@ -226,6 +212,4 @@ function! s:display(echodoc, filetype) abort
       endif
     endfor
   endif
-
-  let b:prev_echodoc = b:echodoc
 endfunction

@@ -65,14 +65,6 @@ g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 
 		Default: 0
 
-g:echodoc#enable_force_overwrite
-					*g:echodoc#enable_force_overwrite*
-		If the value of this variable is non-zero,
-		|echodoc| overwrites current documentation in echo area.
-		Note: It adds the flicker.
-
-		Default: 0
-
 g:echodoc#highlight_identifier
 					*g:echodoc#highlight_identifier*
 		The highlight of identifier.
