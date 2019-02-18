@@ -14,4 +14,7 @@ function! s:suite.parse_funcs() abort
   let args = echodoc#util#parse_funcs(
         \ 'void process(std::array<T,size> array){...}', '')[0]['args']
   call s:assert.equals(args, ['std::array<...> array'])
+  let args = echodoc#util#parse_funcs(
+        \ "fn from(s: &'s str) -> String", '')[0]['args']
+  call s:assert.equals(args, ["s: &'s str"])
 endfunction

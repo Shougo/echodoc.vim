@@ -39,6 +39,9 @@ function! echodoc#util#get_func_text() abort
   let max_blank = max([1, get(b:, 'echodoc_max_blank_lines',
         \ get(g:, 'echodoc_max_blank_lines', 1))])
 
+  " Note: single quote does not check
+  let check_quotes = ['"', '`']
+
   while l1 > 0 && line_guard < 5 && blank < max_blank
     if c1 <= 0
       let l1 -= 1
@@ -72,7 +75,7 @@ function! echodoc#util#get_func_text() abort
       continue
     endif
 
-    if last_quote == '' && (c == "'" || c == '"' || c == '`')
+    if last_quote == '' && index(check_quotes, c) >= 0
       let last_quote = c
       continue
     elseif last_quote != ''
@@ -144,6 +147,9 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   let l = len(text) - 1
   let i = -1
 
+  " Note: single quote does not check
+  let check_quotes = ['"', '`']
+
   while i < l
     let i += 1
     let c = text[i]
@@ -163,7 +169,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
       continue
     endif
 
-    if quote_i == -1 && (c == "'" || c == '"' || c == '`')
+    if quote_i == -1 && index(check_quotes, c) >= 0
       " backtick (`) is not used alone in languages that I know of.
       let quote_i = i
       continue
