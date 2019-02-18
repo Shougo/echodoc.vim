@@ -44,13 +44,6 @@ INSTALL						*echodoc-install*
 Note: echodoc requires |v:completed_item| feature.  It is added in Vim
 7.4.774.
 
-NeoBundle 'Shougo/echodoc', '', 'default'
-call neobundle#config('echodoc', {
-      \ 'lazy' : 1,
-      \ 'autoload' : {
-      \ 'insert' : 1,
-      \ }})
-
 ==============================================================================
 INTERFACE					*echodoc-interface*
 
