@@ -19,5 +19,5 @@ function! s:suite.parse_funcs() abort
   call s:assert.equals(args, ["s: &'s str"])
   let args = echodoc#util#parse_funcs(
         \ 'remove_child<T: INode>(&self, child: &T) -> Result', '')[0]['args']
-  call s:assert.equals(args, ['&self, child: &T'])
+  call s:assert.equals(args, ['&self', ' child: &T'])
 endfunction

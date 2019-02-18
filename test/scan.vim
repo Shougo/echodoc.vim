@@ -64,10 +64,6 @@ function! s:scan.skip_strings() abort
   Teardown
 
   Setup
-  call FeedScan('ixxx(''yyy('',', 'xxx(''yyy('',')
-  Teardown
-
-  Setup
   call FeedScan('ixxx(`yyy(`,', 'xxx(`yyy(`,')
   Teardown
 
@@ -77,20 +73,12 @@ function! s:scan.skip_strings() abort
   Teardown
 
   Setup
-  call FeedScan('ixxx(''yyy(\'''',', 'xxx(''yyy(\'''',')
-  Teardown
-
-  Setup
   call FeedScan('ixxx(`yyy(\``,', 'xxx(`yyy(\``,')
   Teardown
 
   " Ensure string skipping isn't confused by other string delimiters.
   Setup
   call FeedScan('ixxx("yyy(''`",', 'xxx("yyy(''`",')
-  Teardown
-
-  Setup
-  call FeedScan('ixxx(''yyy("`'',', 'xxx(''yyy("`'',')
   Teardown
 
   Setup
