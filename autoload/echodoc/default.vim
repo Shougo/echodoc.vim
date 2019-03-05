@@ -88,10 +88,10 @@ function! echodoc#default#get_cache(filetype) abort
   return s:complete_cache[a:filetype]
 endfunction
 
-function! echodoc#default#make_cache(filetype) abort
+function! echodoc#default#make_cache(filetype, completed_item) abort
   let cache = echodoc#default#get_cache(a:filetype)
 
-  let candidates = [v:completed_item]
+  let candidates = [a:completed_item]
   if exists('g:deoplete#_prev_completion')
     let candidates += g:deoplete#_prev_completion.candidates
   endif

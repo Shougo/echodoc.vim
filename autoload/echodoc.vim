@@ -37,6 +37,9 @@ function! echodoc#enable() abort
           \ * call s:on_cursor_moved()
     autocmd InsertLeave * call s:on_insert_leave()
   augroup END
+  if exists('##MenuPopupChanged')
+    autocmd echodoc MenuPopupChanged * call s:on_cursor_moved()
+  endif
   let s:is_enabled = 1
 endfunction
 function! echodoc#disable() abort
@@ -117,8 +120,12 @@ function! s:_on_cursor_moved(timer) abort
     let filetype = 'nothing'
   endif
 
-  if filetype != '' && !empty(get(v:, 'completed_item', {}))
-    call echodoc#default#make_cache(filetype)
+  let completed_item = get(v:, 'completed_item', {})
+  if empty(completed_item)
+    let completed_item = get(v:event, 'completed_item', {})
+  endif
+  if filetype != '' && !empty(completed_item)
+    call echodoc#default#make_cache(filetype, completed_item)
   endif
 
   let dicts = filter(copy(s:echodoc_dicts),
