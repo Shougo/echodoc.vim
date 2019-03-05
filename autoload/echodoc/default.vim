@@ -13,7 +13,7 @@ let s:default = {
 
 " @vimlint(EVL102, 1, v:completed_item)
 function! s:default.search(cur_text, filetype) abort
-  if a:filetype == ''
+  if a:filetype ==# ''
     return []
   endif
 

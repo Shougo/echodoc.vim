@@ -116,7 +116,7 @@ function! s:on_event() abort
   let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
-  if filetype == ''
+  if filetype ==# ''
     let filetype = 'nothing'
   endif
 
@@ -124,7 +124,7 @@ function! s:on_event() abort
   if empty(completed_item)
     let completed_item = get(v:event, 'completed_item', {})
   endif
-  if filetype != '' && !empty(completed_item)
+  if filetype !=# '' && !empty(completed_item)
     call echodoc#default#make_cache(filetype, completed_item)
   endif
 
@@ -139,7 +139,7 @@ function! s:on_event() abort
   endif
 
   " No function text was found
-  if cur_text == '' && defaut_only
+  if cur_text ==# '' && defaut_only
     return
   endif
 
