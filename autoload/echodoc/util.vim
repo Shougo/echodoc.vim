@@ -14,7 +14,7 @@ function! s:mbprevchar(text, col) abort
   endif
   let c = matchstr(a:text, '\%'.a:col.'c.')
   let c1 = a:col - 1
-  while c1 > 0 && c == ''
+  while c1 > 0 && c ==# ''
     let c = matchstr(a:text, '\%'.c1.'c.')
     let c1 -= 1
   endwhile
@@ -65,7 +65,7 @@ function! echodoc#util#get_func_text() abort
 
     if c1 > 0
       let [_, p] = s:mbprevchar(text, c1)
-      if p == '\'
+      if p ==# '\'
         continue
       endif
     endif
@@ -75,17 +75,17 @@ function! echodoc#util#get_func_text() abort
       continue
     endif
 
-    if last_quote == '' && index(check_quotes, c) >= 0
+    if last_quote ==# '' && index(check_quotes, c) >= 0
       let last_quote = c
       continue
-    elseif last_quote != ''
+    elseif last_quote !=# ''
       if last_quote == c
         let last_quote = ''
       endif
       continue
     endif
 
-    if c == '('
+    if c ==# '('
       if skip == 0
         if p =~# '\k\|\s'
           let found = 1
@@ -94,12 +94,12 @@ function! echodoc#util#get_func_text() abort
       else
         let skip -= 1
       endif
-    elseif c == ')'
+    elseif c ==# ')'
       let skip += 1
     endif
   endwhile
 
-  if (found || last_quote != '') && l1 > 0 && c1 > 0
+  if (found || last_quote !=# '') && l1 > 0 && c1 > 0
     let lines = getline(l1, l2)
     let lines[-1] = c2 == 0 ? '' : lines[-1][:c2 - 1]
     let lines[0] = c1 == 0 ? '' : matchstr(lines[0], '\k\+\%>'.(c1 - 1).'c.*')
@@ -119,7 +119,7 @@ endfunction
 " - ppos: The function's position in the previous function in the stack.
 " - args: A list of arguments.
 function! echodoc#util#parse_funcs(text, filetype) abort
-  if a:text == ''
+  if a:text ==# ''
     return []
   endif
 
@@ -154,7 +154,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
     let i += 1
     let c = text[i]
 
-    if i > 0 && text[i - 1] == '\'
+    if i > 0 && text[i - 1] ==# '\'
       continue
     endif
 
@@ -199,13 +199,13 @@ function! echodoc#util#parse_funcs(text, filetype) abort
         let func_name = matchstr(substitute(text[func_i :i - 1],
               \ '<[^>]*>', '', 'g'), '\k\+$')
 
-        if func_i != -1 && func_i < i - 1 && func_name != ''
+        if func_i != -1 && func_i < i - 1 && func_name !=# ''
           let ppos = 0
           if !empty(open_stack)
             let ppos = open_stack[-1].pos
           endif
 
-          if func_name != ''
+          if func_name !=# ''
             " Opening parenthesis that's preceded by a non-empty string.
             call add(stack, {
                   \ 'name': func_name,
@@ -229,7 +229,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
       else
         let prev.opens[ci] += p > 2 ? -1 : 1
       endif
-    elseif opened == 1 && prev.opens[0] == 1 && c == ','
+    elseif opened == 1 && prev.opens[0] == 1 && c ==# ','
       " Not nested in a pair.
       if !empty(open_stack) && comma <= i
         let open_stack[-1].pos += 1

@@ -33,10 +33,13 @@ function! echodoc#enable() abort
 
   augroup echodoc
     autocmd!
-    autocmd InsertEnter,CompleteDone,CursorMovedI
-          \ * call s:on_cursor_moved()
+    autocmd InsertEnter,CursorMovedI * call s:on_timer()
+    autocmd CompleteDone * call s:on_event()
     autocmd InsertLeave * call s:on_insert_leave()
   augroup END
+  if exists('##MenuPopupChanged')
+    autocmd echodoc MenuPopupChanged * call s:on_event()
+  endif
   let s:is_enabled = 1
 endfunction
 function! echodoc#disable() abort
@@ -96,29 +99,33 @@ function! s:print_error(msg) abort
 endfunction
 
 " Autocmd events.
-function! s:on_cursor_moved() abort
+function! s:on_timer() abort
   if !has('timers')
-    return s:_on_cursor_moved(0)
+    return s:on_event()
   endif
 
   if exists('s:_timer')
     call timer_stop(s:_timer)
   endif
 
-  let s:_timer = timer_start(100, function('s:_on_cursor_moved'))
+  let s:_timer = timer_start(100, {-> s:on_event()})
 endfunction
-" @vimlint(EVL103, 1, a:timer)
-function! s:_on_cursor_moved(timer) abort
+function! s:on_event() abort
   unlet! s:_timer
+
   let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
-  if filetype == ''
+  if filetype ==# ''
     let filetype = 'nothing'
   endif
 
-  if filetype != '' && !empty(get(v:, 'completed_item', {}))
-    call echodoc#default#make_cache(filetype)
+  let completed_item = get(v:, 'completed_item', {})
+  if empty(completed_item)
+    let completed_item = get(v:event, 'completed_item', {})
+  endif
+  if filetype !=# '' && !empty(completed_item)
+    call echodoc#default#make_cache(filetype, completed_item)
   endif
 
   let dicts = filter(copy(s:echodoc_dicts),
@@ -132,7 +139,7 @@ function! s:_on_cursor_moved(timer) abort
   endif
 
   " No function text was found
-  if cur_text == '' && defaut_only
+  if cur_text ==# '' && defaut_only
     return
   endif
 
