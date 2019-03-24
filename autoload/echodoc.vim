@@ -159,7 +159,10 @@ function! s:on_event() abort
   endfor
 
   if !empty(echodoc)
+    let b:echodoc = echodoc
     call s:display(echodoc, filetype)
+  elseif exists('b:echodoc')
+    unlet b:echodoc
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
