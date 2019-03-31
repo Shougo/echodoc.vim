@@ -37,8 +37,8 @@ function! echodoc#enable() abort
     autocmd CompleteDone * call s:on_event()
     autocmd InsertLeave * call s:on_insert_leave()
   augroup END
-  if exists('##MenuPopupChanged')
-    autocmd echodoc MenuPopupChanged * call s:on_event()
+  if exists('##CompleteChanged')
+    autocmd echodoc CompleteChanged * call s:on_event()
   endif
   let s:is_enabled = 1
 endfunction
