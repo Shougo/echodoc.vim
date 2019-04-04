@@ -22,6 +22,8 @@ let g:echodoc#highlight_arguments = get(g:,
       \ 'echodoc#highlight_arguments', 'Special')
 let g:echodoc#highlight_trailing = get(g:,
       \ 'echodoc#highlight_trailing', 'Type')
+let g:echodoc#events = get(g:,
+      \ 'echodoc#events', ['CompleteDone'])
 
 function! echodoc#enable() abort
   if &showmode && &cmdheight < 2 && echodoc#is_echo()
@@ -33,13 +35,16 @@ function! echodoc#enable() abort
 
   augroup echodoc
     autocmd!
-    autocmd InsertEnter,CursorMovedI * call s:on_timer()
-    autocmd CompleteDone * call s:on_event()
+    autocmd InsertEnter * call s:on_timer('InsertEnter')
+    autocmd CursorMovedI * call s:on_timer('CursorMovedI')
     autocmd InsertLeave * call s:on_insert_leave()
   augroup END
-  if exists('##CompleteChanged')
-    autocmd echodoc CompleteChanged * call s:on_event()
-  endif
+  for event in g:echodoc#events
+    if exists('##' . event)
+      execute printf('autocmd echodoc %s * call s:on_event("%s")',
+            \ event, event)
+    endif
+  endfor
   let s:is_enabled = 1
 endfunction
 function! echodoc#disable() abort
@@ -99,7 +104,7 @@ function! s:print_error(msg) abort
 endfunction
 
 " Autocmd events.
-function! s:on_timer() abort
+function! s:on_timer(event) abort
   if !has('timers')
     return s:on_event()
   endif
@@ -108,9 +113,9 @@ function! s:on_timer() abort
     call timer_stop(s:_timer)
   endif
 
-  let s:_timer = timer_start(100, {-> s:on_event()})
+  let s:_timer = timer_start(100, {-> s:on_event(a:event)})
 endfunction
-function! s:on_event() abort
+function! s:on_event(event) abort
   unlet! s:_timer
 
   let cur_text = echodoc#util#get_func_text()
@@ -121,7 +126,7 @@ function! s:on_event() abort
   endif
 
   let completed_item = get(v:, 'completed_item', {})
-  if empty(completed_item)
+  if empty(completed_item) && exists('v:event')
     let completed_item = get(v:event, 'completed_item', {})
   endif
   if filetype !=# '' && !empty(completed_item)

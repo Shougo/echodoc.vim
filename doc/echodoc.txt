@@ -65,6 +65,11 @@ g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 
 		Default: 0
 
+g:echodoc#events				*g:echodoc#events*
+		If the |autocmd-events| are fired, echodoc is enabled.
+
+		Default: ['CompleteDone']
+
 g:echodoc#highlight_identifier
 					*g:echodoc#highlight_identifier*
 		The highlight of identifier.
