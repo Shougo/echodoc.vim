@@ -118,7 +118,6 @@ endfunction
 function! s:on_event(event) abort
   unlet! s:_timer
 
-  let cur_text = echodoc#util#get_func_text()
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
   if filetype ==# ''
@@ -142,6 +141,8 @@ function! s:on_event(event) abort
   if defaut_only && empty(echodoc#default#get_cache(filetype))
     return
   endif
+
+  let cur_text = echodoc#util#get_func_text()
 
   " No function text was found
   if cur_text ==# '' && defaut_only
