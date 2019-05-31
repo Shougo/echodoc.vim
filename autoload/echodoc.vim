@@ -13,6 +13,11 @@ if exists('*nvim_create_namespace')
 elseif exists('*nvim_buf_add_highlight')
   let s:echodoc_id = nvim_buf_add_highlight(0, 0, '', 0, 0, 0)
 endif
+let s:floating_buf = v:null
+let s:win = v:null
+if exists('*nvim_create_buf')
+  let s:floating_buf = nvim_create_buf(v:false, v:true)
+endif
 
 let g:echodoc#type = get(g:,
       \ 'echodoc#type', 'echo')
@@ -57,7 +62,7 @@ function! echodoc#is_enabled() abort
   return s:is_enabled
 endfunction
 function! echodoc#is_echo() abort
-  return !echodoc#is_signature() && !echodoc#is_virtual()
+  return !echodoc#is_signature() && !echodoc#is_virtual() && !echodoc#is_floating()
 endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
@@ -65,6 +70,9 @@ function! echodoc#is_signature() abort
 endfunction
 function! echodoc#is_virtual() abort
   return g:echodoc#type ==# 'virtual' && exists('*nvim_buf_set_virtual_text')
+endfunction
+function! echodoc#is_floating() abort
+  return g:echodoc#type ==# 'floating' && exists('*nvim_open_win')
 endfunction
 function! echodoc#get(name) abort
   return get(filter(s:echodoc_dicts,
@@ -176,7 +184,13 @@ function! s:on_insert_leave() abort
   if echodoc#is_signature()
     call rpcnotify(0, 'Gui', 'signature_hide')
   endif
-
+  if echodoc#is_floating()
+    if s:win != v:null
+      call nvim_win_close(s:win, v:false)
+      let s:win = v:null
+    endif
+    call nvim_buf_clear_namespace(s:floating_buf, s:echodoc_id, 0, -1)
+  endif
   if echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   endif
@@ -216,6 +230,49 @@ function! s:display(echodoc, filetype) abort
           \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
     call nvim_buf_set_virtual_text(
           \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
+  elseif echodoc#is_floating()
+    let hunk = join(map(copy(a:echodoc), "v:val.text"), "")
+    let window_width = strlen(hunk)
+
+    let identifier_pos = match(getline('.'), a:echodoc[0].text)
+    if identifier_pos != -1 " Identifier found in current line
+      let cursor_pos = getpos('.')[2]
+      " align the function signature text and the line text
+      let identifier_pos =  cursor_pos - identifier_pos
+    endif
+    call nvim_buf_set_lines(s:floating_buf, 0, -1, v:true, [hunk])
+    let opts = {'relative': 'cursor', 'width': window_width,
+        \ 'height': 1, 'col': -identifier_pos + 1,
+        \ 'row': 0, 'anchor': 'SW'}
+    if s:win == v:null
+      let s:win = nvim_open_win(s:floating_buf, 0, opts)
+
+      call nvim_win_set_option(s:win, 'number', v:false)
+      call nvim_win_set_option(s:win, 'relativenumber', v:false)
+      call nvim_win_set_option(s:win, 'cursorline', v:false)
+      call nvim_win_set_option(s:win, 'cursorcolumn', v:false)
+      call nvim_win_set_option(s:win, 'conceallevel', 2)
+      call nvim_win_set_option(s:win, 'signcolumn', "no")
+      call nvim_win_set_option(s:win, 'winhl', 'Normal:EchoDocFloat')
+
+      call nvim_buf_set_option(s:floating_buf, "buftype", "nofile")
+      call nvim_buf_set_option(s:floating_buf, "bufhidden", "delete")
+
+    else
+      call nvim_win_set_config(s:win, opts)
+    endif
+
+    call nvim_buf_clear_namespace(s:floating_buf, s:echodoc_id, 0, -1)
+
+    let last_chunk_index = 0
+    for doc in a:echodoc
+      let len_current_chunk = strlen(doc.text)
+      if has_key(doc, 'highlight')
+        call nvim_buf_add_highlight(s:floating_buf, s:echodoc_id, doc.highlight, 0,
+              \ last_chunk_index, len_current_chunk+last_chunk_index)
+      endif
+      let last_chunk_index += len_current_chunk
+    endfor
   else
     echo ''
     for doc in a:echodoc

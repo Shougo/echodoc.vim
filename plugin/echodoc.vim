@@ -19,6 +19,9 @@ if g:echodoc#enable_at_startup
   augroup END
 endif
 
+" echodoc floating window highlight group
+highlight default link EchoDocFloat Pmenu
+
 command! EchoDocEnable call echodoc#enable()
 command! EchoDocDisable call echodoc#disable()
 
