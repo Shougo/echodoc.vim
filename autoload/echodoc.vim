@@ -13,9 +13,9 @@ if exists('*nvim_create_namespace')
 elseif exists('*nvim_buf_add_highlight')
   let s:echodoc_id = nvim_buf_add_highlight(0, 0, '', 0, 0, 0)
 endif
-let s:floating_buf = v:null
-let s:win = v:null
 if exists('*nvim_create_buf')
+  let s:floating_buf = v:null
+  let s:win = v:null
   let s:floating_buf = nvim_create_buf(v:false, v:true)
 endif
 
