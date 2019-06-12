@@ -251,6 +251,7 @@ function! s:display(echodoc, filetype) abort
       call nvim_win_set_option(s:win, 'relativenumber', v:false)
       call nvim_win_set_option(s:win, 'cursorline', v:false)
       call nvim_win_set_option(s:win, 'cursorcolumn', v:false)
+      call nvim_win_set_option(s:win, 'colorcolumn', '')
       call nvim_win_set_option(s:win, 'conceallevel', 2)
       call nvim_win_set_option(s:win, 'signcolumn', "no")
       call nvim_win_set_option(s:win, 'winhl', 'Normal:EchoDocFloat')
