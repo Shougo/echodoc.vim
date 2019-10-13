@@ -245,7 +245,8 @@ function! echodoc#util#parse_funcs(text, filetype) abort
     let item.pos += 1
   endif
 
-  if a:filetype ==# 'python'
+  if index(['python', 'rust'], a:filetype) >= 0
+    " Remove self argument
     for item in open_stack
       call filter(item.args, "v:val !=# 'self'")
     endfor
