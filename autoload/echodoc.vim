@@ -19,6 +19,11 @@ if exists('*nvim_create_buf')
   let s:floating_buf = nvim_create_buf(v:false, v:true)
 endif
 
+if exists('*popup_create')
+  let s:win = v:null
+  let s:last_ident_idx = v:null
+endif
+
 let g:echodoc#type = get(g:,
       \ 'echodoc#type', 'echo')
 let g:echodoc#highlight_identifier = get(g:,
@@ -63,6 +68,7 @@ function! echodoc#is_enabled() abort
 endfunction
 function! echodoc#is_echo() abort
   return !echodoc#is_signature() && !echodoc#is_virtual() && !echodoc#is_floating()
+          \ && !echodoc#is_popup()
 endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
@@ -73,6 +79,9 @@ function! echodoc#is_virtual() abort
 endfunction
 function! echodoc#is_floating() abort
   return g:echodoc#type ==# 'floating' && exists('*nvim_open_win')
+endfunction
+function! echodoc#is_popup() abort
+  return g:echodoc#type ==# 'popup' && exists('*popup_create')
 endfunction
 function! echodoc#get(name) abort
   return get(filter(s:echodoc_dicts,
@@ -194,6 +203,10 @@ function! s:on_insert_leave() abort
   if echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   endif
+  if echodoc#is_popup()
+    call popup_close(s:win)
+    let s:win = v:null
+  endif
 endfunction
 
 function! s:display(echodoc, filetype) abort
@@ -273,6 +286,60 @@ function! s:display(echodoc, filetype) abort
               \ last_chunk_index, len_current_chunk+last_chunk_index)
       endif
       let last_chunk_index += len_current_chunk
+    endfor
+  elseif echodoc#is_popup()
+    let ident_idx = match(getline('.'), a:echodoc[0].text)
+
+    " popup_close if function changed
+    if s:last_ident_idx != ident_idx
+      let s:last_ident_idx = ident_idx
+      call popup_close(s:win)
+      let s:win = v:null
+    endif
+
+    if s:win == v:null
+      let col = col('.') - ident_idx - 1
+
+      let s:win = popup_create(text, {
+            \ 'line': 'cursor-1',
+            \ 'col': 'cursor-' . col,
+            \ 'maxheight': 1,
+            \ 'wrap': v:false,
+            \ 'highlight': 'EchoDocPopup',
+            \ })
+    else
+        call win_execute(s:win, 'call setbufline(winbufnr(s:win), 1, text)')
+    endif
+
+    let bufnr = winbufnr(s:win)
+
+    " highlight
+    " clear
+    call map(
+          \ copy(prop_type_list({'bufnr': bufnr})),
+          \ "prop_remove({'bufnr': bufnr, 'type': v:val, 'all': 1})",
+          \ )
+
+    let last_chunk_col = 1
+    for doc in a:echodoc
+      let len_current_chunk = strlen(doc.text)
+      if has_key(doc, 'highlight')
+        let type_name = 'Echodoc'.doc.highlight
+        " define
+        call prop_type_delete(type_name, {'bufnr': bufnr})
+        call prop_type_add(type_name, {
+              \ 'highlight': doc.highlight,
+              \ 'bufnr': bufnr,
+              \ })
+
+        " place
+        call prop_add(1, last_chunk_col, {
+              \ 'length': len_current_chunk,
+              \ 'bufnr': bufnr,
+              \ 'type': type_name,
+              \ })
+      endif
+      let last_chunk_col += len_current_chunk
     endfor
   else
     echo ''
