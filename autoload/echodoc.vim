@@ -308,7 +308,7 @@ function! s:display(echodoc, filetype) abort
             \ 'highlight': 'EchoDocPopup',
             \ })
     else
-        call win_execute(s:win, 'call setbufline(winbufnr(s:win), 1, text)')
+      call win_execute(s:win, 'call setbufline(winbufnr(s:win), 1, text)')
     endif
 
     let bufnr = winbufnr(s:win)
