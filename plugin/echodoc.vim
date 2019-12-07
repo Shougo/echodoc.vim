@@ -22,6 +22,9 @@ endif
 " echodoc floating window highlight group
 highlight default link EchoDocFloat Pmenu
 
+" echodoc popup window highlight group
+highlight default link EchoDocPopup Pmenu
+
 command! EchoDocEnable call echodoc#enable()
 command! EchoDocDisable call echodoc#disable()
 
