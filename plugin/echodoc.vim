@@ -4,7 +4,7 @@
 " License: MIT license
 "=============================================================================
 
-if exists('g:loaded_echodoc')
+if exists('g:loaded_echodoc') || !exists('v:completed_item')
   finish
 endif
 
