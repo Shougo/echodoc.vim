@@ -146,8 +146,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   let l = len(text) - 1
   let i = -1
 
-  " Note: single quote does not check
-  let check_quotes = ['"', '`']
+  let check_quotes = ['"', '`', "'"]
 
   while i < l
     let i += 1
