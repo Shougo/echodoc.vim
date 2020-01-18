@@ -39,7 +39,7 @@ function! echodoc#util#get_func_text() abort
   let max_blank = max([1, get(b:, 'echodoc_max_blank_lines',
         \ get(g:, 'echodoc_max_blank_lines', 1))])
 
-  let check_quotes = ['"', '`', "'"]
+  let check_quotes = s:check_quotes()
 
   while l1 > 0 && line_guard < 5 && blank < max_blank
     if c1 <= 0
@@ -146,7 +146,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   let l = len(text) - 1
   let i = -1
 
-  let check_quotes = ['"', '`', "'"]
+  let check_quotes = s:check_quotes()
 
   while i < l
     let i += 1
@@ -314,4 +314,10 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
     let comp.name = word
   endif
   return comp
+endfunction
+
+function! s:check_quotes() abort
+  " Note: It is very ugly check...
+  " Rust contains quoting pattern like "fn from(s: &'s str) -> String"
+  return &filetype != 'rust' ? ['"', '`', "'"] : ['"', '`']
 endfunction
