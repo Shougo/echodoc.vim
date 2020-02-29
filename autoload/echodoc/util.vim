@@ -52,6 +52,9 @@ function! echodoc#util#get_func_text() abort
         let blank = 0
       endif
       let line_guard += 1
+
+      " Clear last quote
+      let last_quote = ''
       continue
     endif
 
