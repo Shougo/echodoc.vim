@@ -124,6 +124,5 @@ function! s:scan.multibyte() abort
   call FeedScan('i悪い翻訳者(<cr>', "悪い翻訳者(\n")
   call FeedScan('a"כובע חגיגי",<cr>', "悪い翻訳者(\n\"כובע חגיגי\",\n")
   call FeedScan('a"شعر الصدر"', "悪い翻訳者(\n\"כובע חגיגי\",\n\"شعر الصدر\"")
-  call FeedScan('a) == ("🎳', '')
   Teardown
 endfunction
