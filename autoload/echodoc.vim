@@ -47,7 +47,7 @@ function! echodoc#enable() abort
     autocmd!
     autocmd InsertEnter * call s:on_timer('InsertEnter')
     autocmd CursorMovedI * call s:on_timer('CursorMovedI')
-    autocmd InsertLeave * call s:on_insert_leave()
+    autocmd InsertLeave * call s:clear_documentation()
   augroup END
   for event in g:echodoc#events
     if exists('##' . event)
@@ -163,6 +163,7 @@ function! s:on_event(event) abort
 
   " No function text was found
   if cur_text ==# '' && defaut_only
+    call s:clear_documentation()
     return
   endif
 
@@ -189,23 +190,22 @@ function! s:on_event(event) abort
   endif
 endfunction
 " @vimlint(EVL103, 0, a:timer)
-function! s:on_insert_leave() abort
+function! s:clear_documentation() abort
   if echodoc#is_signature()
     call rpcnotify(0, 'Gui', 'signature_hide')
-  endif
-  if echodoc#is_floating()
+  elseif echodoc#is_floating()
     if s:win != v:null
       call nvim_win_close(s:win, v:false)
       let s:win = v:null
     endif
     call nvim_buf_clear_namespace(s:floating_buf, s:echodoc_id, 0, -1)
-  endif
-  if echodoc#is_virtual()
+  elseif echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
-  endif
-  if echodoc#is_popup()
+  elseif echodoc#is_popup()
     call popup_close(s:win)
     let s:win = v:null
+  else
+    echo ''
   endif
 endfunction
 
