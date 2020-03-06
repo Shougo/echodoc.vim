@@ -22,4 +22,8 @@ function! s:suite.parse_funcs() abort
   let args = echodoc#util#parse_funcs(
         \ 'remove_child<T: INode>(&self, child: &T) -> Result', '')[0]['args']
   call s:assert.equals(args, ['&self', ' child: &T'])
+
+  let args = echodoc#util#parse_funcs(
+        \ 'a(n, m)', '')[0]['args']
+  call s:assert.equals(args, ['n', ' m'])
 endfunction

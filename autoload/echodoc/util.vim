@@ -200,7 +200,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
         let func_name = matchstr(substitute(text[func_i :i - 1],
               \ '<[^>]*>', '', 'g'), '\k\+$')
 
-        if func_i != -1 && func_i < i - 1 && func_name !=# ''
+        if func_i != -1 && func_i < i && func_name !=# ''
           let ppos = 0
           if !empty(open_stack)
             let ppos = open_stack[-1].pos
