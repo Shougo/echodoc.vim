@@ -67,8 +67,8 @@ function! echodoc#is_enabled() abort
   return s:is_enabled
 endfunction
 function! echodoc#is_echo() abort
-  return !echodoc#is_signature() && !echodoc#is_virtual() && !echodoc#is_floating()
-          \ && !echodoc#is_popup()
+  return !echodoc#is_signature() && !echodoc#is_virtual()
+        \ && !echodoc#is_floating() && !echodoc#is_popup()
 endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
@@ -344,12 +344,18 @@ function! s:display(echodoc, filetype) abort
   else
     echo ''
     for doc in a:echodoc
+      let text = doc.text
+      if exists('v:echospace')
+        " To prevent 2 "Hit enter to continue"
+        let text = text[: v:echospace - 1]
+      endif
+
       if has_key(doc, 'highlight')
         execute 'echohl' doc.highlight
-        echon doc.text
+        echon text
         echohl None
       else
-        echon doc.text
+        echon text
       endif
     endfor
   endif
