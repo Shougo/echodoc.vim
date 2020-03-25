@@ -343,11 +343,13 @@ function! s:display(echodoc, filetype) abort
     endfor
   else
     echo ''
+    let echospace = exists('v:echospace') ? v:echospace : -1
     for doc in a:echodoc
       let text = doc.text
-      if exists('v:echospace')
+      if echospace > 0
         " To prevent 2 "Hit enter to continue"
-        let text = text[: v:echospace - 1]
+        let text = strcharpart(text, 0, echospace)
+        let echospace -= strwidth(text)
       endif
 
       if has_key(doc, 'highlight')
