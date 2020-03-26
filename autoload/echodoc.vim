@@ -343,7 +343,7 @@ function! s:display(echodoc, filetype) abort
     endfor
   else
     echo ''
-    let echospace = exists('v:echospace') ? v:echospace : -1
+    let echospace = get(v:, 'echospace', -1)
     for doc in a:echodoc
       let text = doc.text
       if exists('v:echospace')
