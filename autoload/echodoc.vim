@@ -346,7 +346,7 @@ function! s:display(echodoc, filetype) abort
     let echospace = exists('v:echospace') ? v:echospace : -1
     for doc in a:echodoc
       let text = doc.text
-      if echospace > 0
+      if exists('v:echospace')
         " To prevent 2 "Hit enter to continue"
         let text = strcharpart(text, 0, echospace)
         let echospace -= strwidth(text)
