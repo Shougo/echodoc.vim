@@ -247,13 +247,18 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   endif
 
   if index(['python', 'rust'], a:filetype) >= 0
+    " Remove self argument
     let expr = a:filetype ==# 'python' ?
           \ "v:val !=# 'self'" :
           \ "index(['self', '&self', '&mut self'], v:val) < 0"
-    " Remove self argument
-    for item in open_stack
+    for item in stack
       call filter(item.args, expr)
     endfor
+
+    if !empty(stack) && !empty(stack[-1].args)
+      " Remove heading spaces
+      let stack[-1].args[0] = substitute(stack[-1].args[0], '^\s\+', '', '')
+    endif
   endif
 
   if !empty(stack) && stack[-1].opens[0] == 0

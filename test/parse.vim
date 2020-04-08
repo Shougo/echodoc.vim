@@ -26,4 +26,8 @@ function! s:suite.parse_funcs() abort
   let args = echodoc#util#parse_funcs(
         \ 'a(n, m)', '')[0]['args']
   call s:assert.equals(args, ['n', ' m'])
+
+  let args = echodoc#util#parse_funcs(
+        \ 'send(&self, T:t)', 'rust')[0]['args']
+  call s:assert.equals(args, ['T:t'])
 endfunction
