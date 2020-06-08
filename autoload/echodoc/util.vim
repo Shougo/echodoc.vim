@@ -277,8 +277,9 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
 
   let item = a:completion
   let abbrs = []
-  if get(item, 'user_data', '') !=# ''
-    let user_data = json_decode(item.user_data)
+  if type(get(item, 'user_data', 0)) ==# v:t_string && item.user_data !=# ''
+    let user_data = {}
+    silent! let user_data = json_decode(item.user_data)
     if type(user_data) == v:t_dict && has_key(user_data, 'signature')
       call add(abbrs, user_data.signature)
     endif
