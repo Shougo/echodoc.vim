@@ -134,7 +134,7 @@ function! echodoc#util#parse_funcs(text, filetype) abort
   let text = substitute(text, '\s\+\ze(', '', '')
 
   " Template arguments pattern.
-  let text = substitute(text, '<\zs[^>]*\ze>', '...', 'g')
+  let text = substitute(text, '<\zs[^(]*\ze>', '...', 'g')
 
   let quote_i = -1
   let stack = []
