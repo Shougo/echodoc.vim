@@ -202,7 +202,7 @@ function! s:clear_documentation() abort
   elseif echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   elseif echodoc#is_popup()
-    call popup_close(s:win)
+    call popup_clear(1)
     let s:win = v:null
   else
     echo ''
@@ -297,7 +297,8 @@ function! s:display(echodoc, filetype) abort
       let s:win = v:null
     endif
 
-    if s:win == v:null
+    let bufnr = winbufnr(s:win)
+    if s:win == v:null || bufnr < 0
       let col = col('.') - ident_idx - 1
 
       let s:win = popup_create(text, {
@@ -315,6 +316,9 @@ function! s:display(echodoc, filetype) abort
 
     " highlight
     " clear
+    if bufnr < 0
+        return
+    endif
     call map(
           \ copy(prop_type_list({'bufnr': bufnr})),
           \ "prop_remove({'bufnr': bufnr, 'type': v:val, 'all': 1})",
