@@ -202,8 +202,10 @@ function! s:clear_documentation() abort
   elseif echodoc#is_virtual()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   elseif echodoc#is_popup()
-    call popup_clear(1)
-    let s:win = v:null
+    if s:win != v:null
+        silent! call popup_close(s:win)
+        let s:win = v:null
+    endif
   else
     echo ''
   endif
