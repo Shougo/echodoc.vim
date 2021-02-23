@@ -45,8 +45,8 @@ function! echodoc#enable() abort
 
   augroup echodoc
     autocmd!
-    autocmd InsertEnter * call s:on_timer('InsertEnter')
-    autocmd CursorMovedI * call s:on_timer('CursorMovedI')
+    autocmd InsertEnter * call s:on_event('InsertEnter')
+    autocmd CursorMovedI * call s:on_event('CursorMovedI')
     autocmd InsertLeave * call s:clear_documentation()
   augroup END
   for event in g:echodoc#events
@@ -121,20 +121,7 @@ function! s:print_error(msg) abort
 endfunction
 
 " Autocmd events.
-function! s:on_timer(event) abort
-  if !has('timers')
-    return s:on_event()
-  endif
-
-  if exists('s:_timer')
-    call timer_stop(s:_timer)
-  endif
-
-  let s:_timer = timer_start(100, {-> s:on_event(a:event)})
-endfunction
 function! s:on_event(event) abort
-  unlet! s:_timer
-
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
   if filetype ==# ''
