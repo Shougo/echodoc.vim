@@ -88,6 +88,16 @@ g:echodoc#highlight_trailing
 
 		Default: "Type"
 
+g:echodoc#max_line_guard
+						*g:echodoc#max_line_guard*
+		The maximux of line guard.
+		If you increase the value, echodoc analysis more backward
+		lines.
+
+		Note: If you increase the value, it slows your Vim.
+
+		Default: 5
+
 g:echodoc#type					*g:echodoc#type*
 		The documentation display type.
 		"echo":

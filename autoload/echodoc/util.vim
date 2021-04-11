@@ -38,10 +38,12 @@ function! echodoc#util#get_func_text() abort
   let blank = 0
   let max_blank = max([1, get(b:, 'echodoc_max_blank_lines',
         \ get(g:, 'echodoc_max_blank_lines', 1))])
+  let max_guard = get(b:, 'echodoc_max_line_guard',
+        \ get(g:, 'echodoc_max_line_guard', 5))
 
   let check_quotes = s:check_quotes()
 
-  while l1 > 0 && line_guard < 5 && blank < max_blank
+  while l1 > 0 && line_guard < max_guard && blank < max_blank
     if c1 <= 0
       let l1 -= 1
       let c1 = col([l1, '$'])
