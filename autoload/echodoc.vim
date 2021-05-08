@@ -164,7 +164,7 @@ function! s:get_completed_item_and_store(filetype) abort
 endfunction
 
 function! s:find_and_format_item(dicts, cur_text, filetype) abort
-  let echodoc = {}
+  let echodoc = []
   for doc_dict in a:dicts
     if doc_dict.name ==# 'default'
       let ret = doc_dict.search(a:cur_text, a:filetype)
