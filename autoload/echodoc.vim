@@ -128,38 +128,48 @@ function! s:on_event(event) abort
     let filetype = 'nothing'
   endif
 
-  let completed_item = get(v:, 'completed_item', {})
-  if empty(completed_item) && exists('v:event')
-    let completed_item = get(v:event, 'completed_item', {})
-  endif
-  if filetype !=# '' && !empty(completed_item)
-    call echodoc#default#make_cache(filetype, completed_item)
-  endif
-
+  call s:get_completed_item_and_store(filetype)
   let dicts = filter(copy(s:echodoc_dicts),
         \ "empty(get(v:val, 'filetypes', {}))
         \  || get(v:val.filetypes, filetype, 0)")
-
-  let defaut_only = len(dicts) == 1
-
-  if defaut_only && empty(echodoc#default#get_cache(filetype))
+  let default_only = len(dicts) == 1
+  if default_only && empty(echodoc#default#get_cache(filetype))
     return
   endif
 
   let cur_text = echodoc#util#get_func_text()
-
   " No function text was found
-  if cur_text ==# '' && defaut_only
+  if cur_text ==# '' && default_only
     call s:clear_documentation()
     return
   endif
 
+  let echodoc = s:find_and_format_item(dicts, cur_text, filetype)
+  if !empty(echodoc)
+    let b:echodoc = echodoc
+    call s:display(echodoc, filetype)
+  elseif exists('b:echodoc')
+    unlet b:echodoc
+  endif
+endfunction
+
+function! s:get_completed_item_and_store(filetype) abort
+  let completed_item = get(v:, 'completed_item', {})
+  if empty(completed_item) && exists('v:event')
+    let completed_item = get(v:event, 'completed_item', {})
+  endif
+  if a:filetype !=# '' && !empty(completed_item)
+    call echodoc#default#make_cache(a:filetype, completed_item)
+  endif
+endfunction
+
+function! s:find_and_format_item(dicts, cur_text, filetype) abort
   let echodoc = {}
-  for doc_dict in dicts
+  for doc_dict in a:dicts
     if doc_dict.name ==# 'default'
-      let ret = doc_dict.search(cur_text, filetype)
+      let ret = doc_dict.search(a:cur_text, a:filetype)
     else
-      let ret = doc_dict.search(cur_text)
+      let ret = doc_dict.search(a:cur_text)
     endif
 
     if !empty(ret)
@@ -168,14 +178,9 @@ function! s:on_event(event) abort
       break
     endif
   endfor
-
-  if !empty(echodoc)
-    let b:echodoc = echodoc
-    call s:display(echodoc, filetype)
-  elseif exists('b:echodoc')
-    unlet b:echodoc
-  endif
+  return echodoc
 endfunction
+
 " @vimlint(EVL103, 0, a:timer)
 function! s:clear_documentation() abort
   if echodoc#is_signature()
