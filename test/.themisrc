@@ -1,7 +1,7 @@
 let s:assert = themis#helper('assert')
 
 function! EchodocGetFuncText() abort
-  let g:_func_name = echodoc#util#get_func_text()
+  let [line, g:_func_name] = echodoc#util#get_func_text()
   return ''
 endfunction
 
