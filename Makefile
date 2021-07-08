@@ -4,4 +4,9 @@ test: vim-themis
 vim-themis:
 	git clone https://github.com/thinca/vim-themis vim-themis
 
-.PHONY: test
+lint:
+	vint --version
+	vint plugin
+	vint autoload
+
+.PHONY: test lint

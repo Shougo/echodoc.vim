@@ -241,7 +241,7 @@ function! s:display(echodoc, filetype) abort
     call nvim_buf_set_virtual_text(
           \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
   elseif echodoc#is_floating()
-    let hunk = join(map(copy(a:echodoc), "v:val.text"), "")
+    let hunk = join(map(copy(a:echodoc), 'v:val.text'), '')
     let window_width = strlen(hunk)
 
     let identifier_pos = match(getline('.'), a:echodoc[0].text)
@@ -267,11 +267,11 @@ function! s:display(echodoc, filetype) abort
       call nvim_win_set_option(s:win, 'cursorcolumn', v:false)
       call nvim_win_set_option(s:win, 'colorcolumn', '')
       call nvim_win_set_option(s:win, 'conceallevel', 2)
-      call nvim_win_set_option(s:win, 'signcolumn', "no")
+      call nvim_win_set_option(s:win, 'signcolumn', 'no')
       call nvim_win_set_option(s:win, 'winhl', 'Normal:EchoDocFloat')
 
-      call nvim_buf_set_option(s:floating_buf, "buftype", "nofile")
-      call nvim_buf_set_option(s:floating_buf, "bufhidden", "delete")
+      call nvim_buf_set_option(s:floating_buf, 'buftype', 'nofile')
+      call nvim_buf_set_option(s:floating_buf, 'bufhidden', 'delete')
     else
       call nvim_win_set_config(s:win, opts)
     endif

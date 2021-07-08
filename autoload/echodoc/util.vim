@@ -330,5 +330,5 @@ endfunction
 function! s:check_quotes() abort
   " Note: It is very ugly check...
   " Rust contains quoting pattern like "fn from(s: &'s str) -> String"
-  return &filetype != 'rust' ? ['"', '`', "'"] : ['"', '`']
+  return &filetype !=# 'rust' ? ['"', '`', "'"] : ['"', '`']
 endfunction
