@@ -107,10 +107,10 @@ function! echodoc#util#get_func_text() abort
     let lines = getline(l1, l2)
     let lines[-1] = c2 == 0 ? '' : lines[-1][:c2 - 1]
     let lines[0] = c1 == 0 ? '' : matchstr(lines[0], '\k\+\%>'.(c1 - 1).'c.*')
-    return join(lines, "\n")
+    return [l1, join(lines, "\n")]
   endif
 
-  return ''
+  return [-1, '']
 endfunction
 " @vimlint(EVL102, 0, l:_)
 
