@@ -137,7 +137,7 @@ function! s:on_event(event) abort
     return
   endif
 
-  let [line, cur_text] = echodoc#util#get_func_text()
+  let [line, col, cur_text] = echodoc#util#get_func_text()
   " No function text was found
   if cur_text ==# '' && default_only
     call s:clear_documentation()
@@ -148,6 +148,7 @@ function! s:on_event(event) abort
   if !empty(echodoc)
     for doc in echodoc
       let doc.line = line
+      let doc.col = col
     endfor
     let b:echodoc = echodoc
     call s:display(echodoc, filetype)
@@ -216,6 +217,13 @@ function! s:display(echodoc, filetype) abort
     return
   endif
 
+  let identifier_pos = match(getline(a:echodoc[0].line), a:echodoc[0].text)
+  if identifier_pos != -1 " Identifier found in current line
+    let cursor_pos = getpos('.')[2]
+    " align the function signature text and the line text
+    let identifier_pos = cursor_pos - identifier_pos
+  endif
+
   " Display
   if echodoc#is_signature()
     let parse = echodoc#util#parse_funcs(getline('.'), a:filetype)
@@ -244,12 +252,6 @@ function! s:display(echodoc, filetype) abort
     let hunk = join(map(copy(a:echodoc), 'v:val.text'), '')
     let window_width = strlen(hunk)
 
-    let identifier_pos = match(getline('.'), a:echodoc[0].text)
-    if identifier_pos != -1 " Identifier found in current line
-      let cursor_pos = getpos('.')[2]
-      " align the function signature text and the line text
-      let identifier_pos =  cursor_pos - identifier_pos
-    endif
     call nvim_buf_set_lines(s:floating_buf, 0, -1, v:true, [hunk])
     let opts = {
           \ 'relative': 'cursor',
@@ -290,11 +292,9 @@ function! s:display(echodoc, filetype) abort
       let last_chunk_index += len_current_chunk
     endfor
   elseif echodoc#is_popup()
-    let ident_idx = match(getline('.'), a:echodoc[0].text)
-
     " popup_close if function changed
-    if s:last_ident_idx != ident_idx
-      let s:last_ident_idx = ident_idx
+    if s:last_ident_idx != identifier_pos
+      let s:last_ident_idx = identifier_pos
       call popup_close(s:win)
       let s:win = v:null
     endif
@@ -302,11 +302,11 @@ function! s:display(echodoc, filetype) abort
     let bufnr = winbufnr(s:win)
     if s:win == v:null || bufnr < 0
       let line = a:echodoc[0].line - line('.') - 1
-      let col = col('.') - ident_idx - 1
+      let col = -identifier_pos + 1
 
       let s:win = popup_create(text, {
             \ 'line': 'cursor' . line,
-            \ 'col': 'cursor-' . col,
+            \ 'col': 'cursor' . (col == 0 ? '' : col > 0 ? '+' . col : col),
             \ 'maxheight': 1,
             \ 'wrap': v:false,
             \ 'highlight': 'EchoDocPopup',
