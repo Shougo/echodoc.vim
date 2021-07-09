@@ -252,11 +252,11 @@ function! s:display(echodoc, filetype) abort
     endif
     call nvim_buf_set_lines(s:floating_buf, 0, -1, v:true, [hunk])
     let opts = {
-          \ 'relative': 'editor',
+          \ 'relative': 'cursor',
           \ 'width': window_width,
           \ 'height': 1,
           \ 'col': -identifier_pos + 1,
-          \ 'row': a:echodoc[0].line - 1, 'anchor': 'SW'
+          \ 'row': a:echodoc[0].line - line('.'), 'anchor': 'SW'
           \ }
     if s:win == v:null
       let s:win = nvim_open_win(s:floating_buf, 0, opts)
@@ -301,10 +301,11 @@ function! s:display(echodoc, filetype) abort
 
     let bufnr = winbufnr(s:win)
     if s:win == v:null || bufnr < 0
+      let line = a:echodoc[0].line - line('.') - 1
       let col = col('.') - ident_idx - 1
 
       let s:win = popup_create(text, {
-            \ 'line': a:echodoc[0].line - 1,
+            \ 'line': 'cursor' . line,
             \ 'col': 'cursor-' . col,
             \ 'maxheight': 1,
             \ 'wrap': v:false,
