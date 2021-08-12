@@ -108,12 +108,13 @@ g:echodoc#type					*g:echodoc#type*
 		"virtual":
 			It uses neovim virtual text feature.
 			the documentation will be placed after the buffer text.
-			|nvim_buf_set_virtual_text()|
+			|nvim_buf_set_extmark()|
 		"floating":
 			It uses neovim floating window feature.
-			the documentation will be placed above the cursor, as a
-			pop-up in the buffer. Has the advantage of being easier
-			to refer to. (jedi-vim like |show_call_signatures|).
+			the documentation will be placed above the cursor, as
+			a pop-up in the buffer. Has the advantage of being
+			easier to refer to.
+			(jedi-vim like |show_call_signatures|)
 			|nvim_open_win()|
 		"popup":
 			It uses vim popup window feature.

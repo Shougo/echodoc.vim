@@ -75,7 +75,7 @@ function! echodoc#is_signature() abort
         \ && has('nvim') && get(g:, 'gonvim_running', 0)
 endfunction
 function! echodoc#is_virtual() abort
-  return g:echodoc#type ==# 'virtual' && exists('*nvim_buf_set_virtual_text')
+  return g:echodoc#type ==# 'virtual' && exists('*nvim_buf_set_extmark')
 endfunction
 function! echodoc#is_floating() abort
   return g:echodoc#type ==# 'floating' && exists('*nvim_open_win')
@@ -243,11 +243,11 @@ function! s:display(echodoc, filetype) abort
     call rpcnotify(0, 'Gui', 'signature_show', text, [line, col], idx)
     redraw!
   elseif echodoc#is_virtual()
-    call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
+    call nvim_buf_clear_namespace(0, s:echodoc_id, 0, -1)
     let chunks = map(copy(a:echodoc),
           \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
-    call nvim_buf_set_virtual_text(
-          \ bufnr('%'), s:echodoc_id, line('.') - 1, chunks, {})
+    call nvim_buf_set_extmark(
+          \ 0, s:echodoc_id, line('.') - 1, 0, { 'virt_text': chunks })
   elseif echodoc#is_floating()
     let hunk = join(map(copy(a:echodoc), 'v:val.text'), '')
     let window_width = strlen(hunk)
