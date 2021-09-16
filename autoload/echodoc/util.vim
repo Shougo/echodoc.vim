@@ -23,7 +23,6 @@ endfunction
 
 " Try to find a function at the current position.
 " Stops if `echodoc_max_blank_lines` is encountered. (max 50)
-" @vimlint(EVL102, 1, l:_)
 function! echodoc#util#get_func_text() abort
   let l2 = line('.')
   let c2 = col('.') - 1
@@ -112,7 +111,6 @@ function! echodoc#util#get_func_text() abort
 
   return [-1, -1, '']
 endfunction
-" @vimlint(EVL102, 0, l:_)
 
 " Returns a parsed stack of functions found in the text.  Each item in the
 " stack contains a dict:

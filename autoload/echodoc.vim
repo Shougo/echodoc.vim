@@ -33,7 +33,8 @@ let g:echodoc#highlight_arguments = get(g:,
 let g:echodoc#highlight_trailing = get(g:,
       \ 'echodoc#highlight_trailing', 'Type')
 let g:echodoc#events = get(g:,
-      \ 'echodoc#events', ['CompleteDone'])
+      \ 'echodoc#events',
+      \ ['CompleteDone', 'TextChangedP', 'CompleteChanged'])
 
 function! echodoc#enable() abort
   if &showmode && &cmdheight < 2 && echodoc#is_echo()
@@ -137,6 +138,11 @@ function! s:on_event(event) abort
     return
   endif
 
+  if a:event ==# 'CompleteChanged'
+    " CompleteChanged does not work for display
+    return
+  endif
+
   let [line, col, cur_text] = echodoc#util#get_func_text()
   " No function text was found
   if cur_text ==# '' && default_only
@@ -151,7 +157,7 @@ function! s:on_event(event) abort
       let doc.col = col
     endfor
     let b:echodoc = echodoc
-    call s:display(echodoc, filetype)
+    call s:display(echodoc, filetype, a:event)
   elseif exists('b:echodoc')
     unlet b:echodoc
   endif
@@ -162,8 +168,15 @@ function! s:get_completed_item_and_store(filetype) abort
   if empty(completed_item) && exists('v:event')
     let completed_item = get(v:event, 'completed_item', {})
   endif
-  if a:filetype !=# '' && !empty(completed_item)
-    call echodoc#default#make_cache(a:filetype, completed_item)
+  if a:filetype !=# ''
+    if !empty(completed_item)
+      call echodoc#default#make_cache(a:filetype, completed_item)
+    endif
+    if exists('*complete_info') && !empty(complete_info().items)
+      let info = complete_info()
+      let item = info.selected >= 0 ? info.items[info.selected] : info.items[0]
+      call echodoc#default#make_cache(a:filetype, item)
+    endif
   endif
 endfunction
 
@@ -185,9 +198,10 @@ function! s:find_and_format_item(dicts, cur_text, filetype) abort
   return echodoc
 endfunction
 
-" @vimlint(EVL103, 0, a:timer)
 function! s:clear_documentation() abort
-  if echodoc#is_signature()
+  if g:echodoc#type ==# 'echo'
+    echo ''
+  elseif echodoc#is_signature()
     call rpcnotify(0, 'Gui', 'signature_hide')
   elseif echodoc#is_floating()
     if s:win != v:null
@@ -202,12 +216,10 @@ function! s:clear_documentation() abort
         silent! call popup_close(s:win)
         let s:win = v:null
     endif
-  else
-    echo ''
   endif
 endfunction
 
-function! s:display(echodoc, filetype) abort
+function! s:display(echodoc, filetype, event) abort
   " Text check
   let text = ''
   for doc in a:echodoc
@@ -225,7 +237,26 @@ function! s:display(echodoc, filetype) abort
   endif
 
   " Display
-  if echodoc#is_signature()
+  if g:echodoc#type ==# 'echo'
+    echo ''
+    let echospace = get(v:, 'echospace', -1)
+    for doc in a:echodoc
+      let text = doc.text
+      if exists('v:echospace')
+        " To prevent 2 "Hit enter to continue"
+        let text = strcharpart(text, 0, echospace)
+        let echospace -= strwidth(text)
+      endif
+
+      if has_key(doc, 'highlight')
+        execute 'echohl' doc.highlight
+        echon text
+        echohl None
+      else
+        echon text
+      endif
+    endfor
+  elseif echodoc#is_signature()
     let parse = echodoc#util#parse_funcs(getline('.'), a:filetype)
     if empty(parse)
       return
@@ -347,25 +378,6 @@ function! s:display(echodoc, filetype) abort
               \ })
       endif
       let last_chunk_col += len_current_chunk
-    endfor
-  else
-    echo ''
-    let echospace = get(v:, 'echospace', -1)
-    for doc in a:echodoc
-      let text = doc.text
-      if exists('v:echospace')
-        " To prevent 2 "Hit enter to continue"
-        let text = strcharpart(text, 0, echospace)
-        let echospace -= strwidth(text)
-      endif
-
-      if has_key(doc, 'highlight')
-        execute 'echohl' doc.highlight
-        echon text
-        echohl None
-      else
-        echon text
-      endif
     endfor
   endif
 endfunction

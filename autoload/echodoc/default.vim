@@ -11,7 +11,6 @@ let s:default = {
       \ 'rank' : 10,
       \ }
 
-" @vimlint(EVL102, 1, v:completed_item)
 function! s:default.search(cur_text, filetype) abort
   if a:filetype ==# ''
     return []
@@ -74,7 +73,6 @@ function! s:format(pos, v_comp) abort
   return ret
 endfunction
 
-" @vimlint(EVL102, 0, v:completed_item)
 function! echodoc#default#get() abort
   return s:default
 endfunction

@@ -68,7 +68,7 @@ g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 g:echodoc#events				*g:echodoc#events*
 		If the |autocmd-events| are fired, echodoc is enabled.
 
-		Default: ['CompleteDone']
+		Default: ['CompleteDone', 'TextChangedP', 'CompleteChanged']
 
 g:echodoc#highlight_identifier
 						*g:echodoc#highlight_identifier*
