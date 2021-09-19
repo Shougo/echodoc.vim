@@ -13,7 +13,7 @@ Interface		|echodoc-interface|
   Variables		  |echodoc-variables|
   Functions		  |echodoc-functions|
 Examples		|echodoc-examples|
-Changelog		|echodoc-changelog|
+Compatibility		|echodoc-compatibility|
 
 ==============================================================================
 INTRODUCTION					*echodoc-introduction*
@@ -22,11 +22,11 @@ INTRODUCTION					*echodoc-introduction*
 
 |echodoc| has the following properties which cannot be realized by ftplugin:
 	1. outputs messages from multiple plugins,
-	   (required that |cmdheight| is high enough or |noshowmode|)
+	   (required that 'cmdheight' is high enough or 'noshowmode')
 	2. has a priority ranking in the search,
 	3. adds/deletes a plugin at any time,
 	4. highlights messages,
-	5. uses context filetype when |context_filetype| is installed, and
+	5. uses context filetype when "context_filetype" is installed, and
 	   https://github.com/Shougo/context_filetype.vim
 	6. uses multiple filetypes.
 
@@ -70,26 +70,26 @@ g:echodoc#events				*g:echodoc#events*
 
 		Default: ['CompleteDone', 'TextChangedP', 'CompleteChanged']
 
+					*g:echodoc#highlight_identifier*
 g:echodoc#highlight_identifier
-						*g:echodoc#highlight_identifier*
 		The highlight of identifier.
 
 		Default: "Identifier"
 
+					*g:echodoc#highlight_arguments*
 g:echodoc#highlight_arguments
-						*g:echodoc#highlight_arguments*
 		The highlight of current argument.
 
 		Default: "Special"
 
-g:echodoc#highlight_trailing
 						*g:echodoc#highlight_trailing*
+g:echodoc#highlight_trailing
 		The highlight of trailing.
 
 		Default: "Type"
 
-g:echodoc#max_line_guard
 						*g:echodoc#max_line_guard*
+g:echodoc#max_line_guard
 		The maximux of line guard.
 		If you increase the value, echodoc analysis more backward
 		lines.
@@ -107,14 +107,14 @@ g:echodoc#type					*g:echodoc#type*
 			https://github.com/dzhou121/gonvim
 		"virtual":
 			It uses neovim virtual text feature.
-			the documentation will be placed after the buffer text.
-			|nvim_buf_set_extmark()|
+			the documentation will be placed after the buffer
+			text. |nvim_buf_set_extmark()|
 		"floating":
 			It uses neovim floating window feature.
 			the documentation will be placed above the cursor, as
 			a pop-up in the buffer. Has the advantage of being
 			easier to refer to.
-			(jedi-vim like |show_call_signatures|)
+			(jedi-vim like "show_call_signatures")
 			|nvim_open_win()|
 		"popup":
 			It uses vim popup window feature.
@@ -153,19 +153,19 @@ echodoc#register({name}, {dict})		*echodoc#register()*
 			shows higher priority.
 
 		"filetypes"	Dictionary (Required)
-			This is a |Dictionary| where the key is a filetype string
-			and the value is anything.
-			|echodoc| uses the {dict} when the {dict} has an entry where
-			the key is the |filetype| of the current buffer.  If this
-			is a empty, |echodoc| always uses the {dict}.
+			This is a |Dictionary| where the key is a filetype
+			string and the value is anything.
+			|echodoc| uses the {dict} when the {dict} has an entry
+			where the key is the |filetype| of the current buffer.
+			If this is a empty, |echodoc| always uses the {dict}.
 
 		"search"	Function	(Required)
 			Search function.  This function takes a string as its
 			parameter and returns a list of dictionaries.  The
-			|Dictionary| must have an entry where the key is "text"
-			and the value is a String of a message.  When the
-			|Dictionary| has an entry with the key "highlight",
-			|echodoc| highlights the message.
+			|Dictionary| must have an entry where the key is
+			"text" and the value is a String of a message.  When
+			the |Dictionary| has an entry with the key
+			"highlight", |echodoc| highlights the message.
 
 echodoc#unregister({name})		*echodoc#unregister()*
 		Unregisters the docs of the name {name}.
@@ -190,12 +190,12 @@ Option 2:
 Option 3:
 	" Or, you could use neovim's virtual virtual text feature.
 	let g:echodoc#enable_at_startup = 1
-	let g:echodoc#type = 'virtual'
+	let g:echodoc#type = "virtual"
 
 Option 4:
 	" Or, you could use neovim's floating text feature.
 	let g:echodoc#enable_at_startup = 1
-	let g:echodoc#type = 'floating'
+	let g:echodoc#type = "floating"
 	" To use a custom highlight for the float window,
 	" change Pmenu to your highlight group
 	highlight link EchoDocFloat Pmenu
@@ -203,10 +203,13 @@ Option 4:
 Option 5:
 	" Or, you could use vim's popup window feature.
 	let g:echodoc#enable_at_startup = 1
-	let g:echodoc#type = 'popup'
+	let g:echodoc#type = "popup"
 	" To use a custom highlight for the popup window,
 	" change Pmenu to your highlight group
 	highlight link EchoDocPopup Pmenu
 >
+==============================================================================
+COMPATIBILITY					*echodoc-compatibility*
+
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:
