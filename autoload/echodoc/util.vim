@@ -284,19 +284,19 @@ function! echodoc#util#completion_signature(completion, maxlen, filetype) abort
       call add(abbrs, user_data.signature)
     endif
   endif
-  if get(item, 'info', '') =~# '^.\+('
+  if get(item, 'info', '') =~# '^.\+(.*)'
     call add(abbrs, matchstr(item.info, '^\_s*\zs.*'))
   endif
-  if get(item, 'kind', '') =~# '^.\+('
+  if get(item, 'kind', '') =~# '^.\+(.*)'
     call add(abbrs, item.kind)
   endif
-  if get(item, 'menu', '') =~# '^.\+('
+  if get(item, 'menu', '') =~# '^.\+(.*)'
     call add(abbrs, item.menu)
   endif
-  if get(item, 'abbr', '') =~# '^.\+('
+  if get(item, 'abbr', '') =~# '^.\+(.*)'
     call add(abbrs, item.abbr)
   endif
-  if item.word =~# '^.\+(' || get(item, 'kind', '') ==# 'f'
+  if item.word =~# '^.\+(.*)' || get(item, 'kind', '') ==# 'f'
     call add(abbrs, item.word)
   endif
 
