@@ -122,6 +122,11 @@ endfunction
 
 " Autocmd events.
 function! s:on_event(event) abort
+  " Skip if not enabled
+  if !get(g:, 'echodoc#enable_at_startup', 0) && !get(b:, 'echodoc_enabled', 0)
+    return
+  endif
+
   let filetype = s:context_filetype_enabled() ?
         \ context_filetype#get_filetype(&filetype) : &l:filetype
   if filetype ==# ''
