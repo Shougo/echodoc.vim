@@ -51,7 +51,9 @@ VARIABLES 					*echodoc-variables*
 
 g:echodoc#enable_at_startup			*g:echodoc#enable_at_startup*
 		If the value of this variable is non-zero,
-		|echodoc| is automatically enabled at startup.
+		|echodoc| is automatically enabled for all sources at startup.
+		Note: If you want to enable echodoc buffer level, you need to
+		call |echodoc#enable()| and use |b:echodoc_enabled| instead.
 
 		Default: 0
 
@@ -114,7 +116,8 @@ g:echodoc#type					*g:echodoc#type*
 		Default: "echo"
 
 b:echodoc_enabled					*b:echodoc_enabled*
-		If it is set to non-zero, echodoc is enabled.
+		If it is set to non-zero, echodoc is enabled in current
+		buffer.
 
 ------------------------------------------------------------------------------
 FUNCTIONS 					*echodoc-functions*
