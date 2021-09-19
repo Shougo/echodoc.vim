@@ -68,8 +68,7 @@ function! echodoc#is_enabled() abort
   return s:is_enabled
 endfunction
 function! echodoc#is_echo() abort
-  return !echodoc#is_signature() && !echodoc#is_virtual()
-        \ && !echodoc#is_floating() && !echodoc#is_popup()
+  return g:echodoc#type ==# 'echo'
 endfunction
 function! echodoc#is_signature() abort
   return g:echodoc#type ==# 'signature'
@@ -199,7 +198,7 @@ function! s:find_and_format_item(dicts, cur_text, filetype) abort
 endfunction
 
 function! s:clear_documentation() abort
-  if g:echodoc#type ==# 'echo'
+  if echodoc#is_echo()
     echo ''
   elseif echodoc#is_signature()
     call rpcnotify(0, 'Gui', 'signature_hide')
@@ -237,7 +236,7 @@ function! s:display(echodoc, filetype, event) abort
   endif
 
   " Display
-  if g:echodoc#type ==# 'echo'
+  if echodoc#is_echo()
     echo ''
     let echospace = get(v:, 'echospace', -1)
     for doc in a:echodoc
