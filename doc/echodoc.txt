@@ -1,6 +1,6 @@
 *echodoc.txt*	Print documentation in echo area
 
-Version: 1.2
+Version: 2.0
 Author : Shougo <Shougo.Matsu@gmail.com>
 License: MIT license
 
