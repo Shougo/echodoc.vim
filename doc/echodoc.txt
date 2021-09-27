@@ -101,6 +101,12 @@ g:echodoc#type					*g:echodoc#type*
 			It uses neovim virtual text feature.
 			the documentation will be placed after the buffer
 			text. |nvim_buf_set_extmark()|
+		"virtual_lines":
+			It uses neovim virtual lines feature.
+			the documentation will be placed above the line.
+			|nvim_buf_set_extmark()|
+			Note: It is experimental feature and requires neovim
+			0.6+.
 		"floating":
 			It uses neovim floating window feature.
 			the documentation will be placed above the cursor, as

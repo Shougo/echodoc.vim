@@ -37,7 +37,7 @@ let g:echodoc#events = get(g:,
       \ ['CompleteDone', 'TextChangedP', 'CompleteChanged'])
 
 function! echodoc#enable() abort
-  if &showmode && &cmdheight < 2 && echodoc#is_echo()
+  if echodoc#is_echo() && &showmode && &cmdheight < 2
     " Increase the cmdheight so user can clearly see the error
     set cmdheight=2
     call s:print_error('Your cmdheight is too small. '
@@ -76,6 +76,9 @@ function! echodoc#is_signature() abort
 endfunction
 function! echodoc#is_virtual() abort
   return g:echodoc#type ==# 'virtual' && exists('*nvim_buf_set_extmark')
+endfunction
+function! echodoc#is_virtual_lines() abort
+  return g:echodoc#type ==# 'virtual_lines' && has('nvim-0.6')
 endfunction
 function! echodoc#is_floating() abort
   return g:echodoc#type ==# 'floating' && exists('*nvim_open_win')
@@ -213,7 +216,7 @@ function! s:clear_documentation() abort
       let s:win = v:null
     endif
     call nvim_buf_clear_namespace(s:floating_buf, s:echodoc_id, 0, -1)
-  elseif echodoc#is_virtual()
+  elseif echodoc#is_virtual() || echodoc#is_virtual_lines()
     call nvim_buf_clear_namespace(bufnr('%'), s:echodoc_id, 0, -1)
   elseif echodoc#is_popup()
     if s:win != v:null
@@ -277,12 +280,20 @@ function! s:display(echodoc, filetype, event) abort
     endfor
     call rpcnotify(0, 'Gui', 'signature_show', text, [line, col], idx)
     redraw!
-  elseif echodoc#is_virtual()
+  elseif echodoc#is_virtual() || echodoc#is_virtual_lines()
     call nvim_buf_clear_namespace(0, s:echodoc_id, 0, -1)
     let chunks = map(copy(a:echodoc),
-          \ "[v:val.text, get(v:val, 'highlight', 'Normal')]")
-    call nvim_buf_set_extmark(
-          \ 0, s:echodoc_id, line('.') - 1, 0, { 'virt_text': chunks })
+          \ { _, val -> [v:val.text, get(v:val, 'highlight', 'Normal')] })
+    if echodoc#is_virtual()
+      call nvim_buf_set_extmark(
+            \ 0, s:echodoc_id, line('.') - 1, 0, { 'virt_text': chunks })
+    else
+      call nvim_buf_set_extmark(
+            \ 0, s:echodoc_id, line('.') - 1, 0, {
+            \   'virt_lines': [chunks],
+            \   'virt_lines_above': v:true,
+            \ })
+    endif
   elseif echodoc#is_floating()
     let hunk = join(map(copy(a:echodoc), 'v:val.text'), '')
     let window_width = strlen(hunk)
