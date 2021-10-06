@@ -49,6 +49,7 @@ function! echodoc#enable() abort
     autocmd InsertEnter * call s:on_event('InsertEnter')
     autocmd CursorMovedI * call s:on_event('CursorMovedI')
     autocmd InsertLeave * call s:clear_documentation()
+    autocmd User PumCompleteChanged call s:on_event('PumCompleteChanged')
   augroup END
   for event in g:echodoc#events
     if exists('##' . event)
@@ -175,12 +176,17 @@ function! s:get_completed_item_and_store(filetype) abort
   if empty(completed_item) && exists('v:event')
     let completed_item = get(v:event, 'completed_item', {})
   endif
+  if exists('g:pum#completed_item')
+    let completed_item = g:pum#completed_item
+  endif
   if a:filetype !=# ''
     if !empty(completed_item)
       call echodoc#default#make_cache(a:filetype, completed_item)
     endif
-    if exists('*complete_info') && !empty(complete_info().items)
-      let info = complete_info()
+    let info = exists('*ddc#complete_info') ? ddc#complete_info() :
+          \ exists('*complete_info') ? complete_info() :
+          \ { 'items': [] }
+    if !empty(info.items)
       let item = info.selected >= 0 ? info.items[info.selected] : info.items[0]
       call echodoc#default#make_cache(a:filetype, item)
     endif
