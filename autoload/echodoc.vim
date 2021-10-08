@@ -146,8 +146,8 @@ function! s:on_event(event) abort
     return
   endif
 
-  if a:event ==# 'CompleteChanged'
-    " CompleteChanged does not work for display
+  if a:event ==# 'CompleteChanged' || mode() ==# 'c'
+    " CompleteChanged or command line mode does not work for display
     return
   endif
 
