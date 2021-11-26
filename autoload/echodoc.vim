@@ -33,8 +33,7 @@ let g:echodoc#highlight_arguments = get(g:,
 let g:echodoc#highlight_trailing = get(g:,
       \ 'echodoc#highlight_trailing', 'Type')
 let g:echodoc#events = get(g:,
-      \ 'echodoc#events',
-      \ ['CompleteDone', 'TextChangedP', 'CompleteChanged'])
+      \ 'echodoc#events', ['CompleteDone', 'TextChangedP'])
 
 function! echodoc#enable() abort
   if echodoc#is_echo() && &showmode && &cmdheight < 2
@@ -49,11 +48,13 @@ function! echodoc#enable() abort
     autocmd InsertEnter * call s:on_event('InsertEnter')
     autocmd CursorMovedI * call s:on_event('CursorMovedI')
     autocmd InsertLeave * call s:clear_documentation()
-    autocmd User PumCompleteChanged call s:on_event('PumCompleteChanged')
   augroup END
   for event in g:echodoc#events
     if exists('##' . event)
       execute printf('autocmd echodoc %s * call s:on_event("%s")',
+            \ event, event)
+    elseif exists('##User#' . event)
+      execute printf('autocmd echodoc User %s * call s:on_event("%s")',
             \ event, event)
     endif
   endfor
