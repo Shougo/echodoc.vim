@@ -8,16 +8,17 @@ Displays function signatures from completions in the command line.
 
 Use a package manager and follow its instructions.
 
-Note: echodoc requires v:completed_item feature.  It is added in Vim 7.4.774.
+Note: echodoc requires v:completed_item feature. It is added in Vim 7.4.774.
 
 ### Global options
 
 |Flag                               |Default            |Description                                                                                                       |
 |-----------------------------------|-------------------|------------------------------------------------------------------------------------------------------------------|
 |`g:echodoc#enable_at_startup`      |`0`                |If the value of this variable is non-zero, `echodoc` is automatically enabled at startup.                         |
-|`g:echodoc#type`                   |` "echo"`          |Where the documentation is displayed. Choose between:` "echo"`,` "signature"`, `"virtual" `or `"floating"` |
+|`g:echodoc#type`                   |` "echo"`          |Where the documentation is displayed. Choose between:` "echo"`,` "signature"`, `"virtual" `or `"floating"`        |
 |`g:echodoc#events`                 |`['CompleteDone']` |If the `autocmd-events` are fired, echodoc is enabled.                                                            |
-|`g:echodoc#highlight_identifier` |`"Identifier"`     |The highlight of identifier.                                                                                      |
+|`g:echodoc#floating_config`        |`{}`               |The configuration for the floating window.                                                                        |
+|`g:echodoc#highlight_identifier`   |`"Identifier"`     |The highlight of identifier.                                                                                      |
 |`g:echodoc#highlight_arguments`    |`"Special"`        |The highlight of current argument.                                                                                |
 |`g:echodoc#highlight_trailing`     |`"Type"`           |The highlight of trailing.                                                                                        |
 
@@ -60,9 +61,11 @@ let g:echodoc#type = 'virtual'
 
 Option 4:
 ```vim
-" Or, you could use neovim's floating text feature.
+" Or, you could use neovim's floating window feature.
 let g:echodoc#enable_at_startup = 1
 let g:echodoc#type = 'floating'
+" You could configure the behaviour of the floating window like below:
+let g:echodoc#floating_config = {'border': 'single'}
 " To use a custom highlight for the float window,
 " change Pmenu to your highlight group
 highlight link EchoDocFloat Pmenu
