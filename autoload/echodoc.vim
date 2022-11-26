@@ -35,6 +35,9 @@ let g:echodoc#highlight_trailing = get(g:,
 let g:echodoc#events = get(g:,
       \ 'echodoc#events', ['CompleteDone', 'TextChangedP'])
 
+let g:echodoc#floating_config = get(g:,
+      \ 'echodoc#floating_config', {})
+
 function! echodoc#enable() abort
   if echodoc#is_echo() && &showmode && &cmdheight < 2
     " Increase the cmdheight so user can clearly see the error
@@ -306,13 +309,17 @@ function! s:display(echodoc, filetype, event) abort
     let window_width = strlen(hunk)
 
     call nvim_buf_set_lines(s:floating_buf, 0, -1, v:true, [hunk])
-    let opts = {
-          \ 'relative': 'cursor',
-          \ 'width': window_width,
-          \ 'height': 1,
-          \ 'col': -identifier_pos + 1,
-          \ 'row': a:echodoc[0].line - line('.'), 'anchor': 'SW'
-          \ }
+
+    let opts = g:echodoc#floating_config
+
+    call extend(opts, {
+          \   'relative': 'cursor',
+          \   'width': window_width,
+          \   'height': 1,
+          \   'col': -identifier_pos + 1,
+          \   'row': a:echodoc[0].line - line('.'), 'anchor': 'SW',
+          \ })
+
     if s:win == v:null
       let s:win = nvim_open_win(s:floating_buf, 0, opts)
 

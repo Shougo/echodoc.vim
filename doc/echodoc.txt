@@ -121,6 +121,14 @@ g:echodoc#type					*g:echodoc#type*
 
 		Default: "echo"
 
+g:echodoc#floating_config			*g:echodoc#type*
+		The configuration dictionary for the floating window.
+		This does matter only if you set g:echodoc#type as "floating".
+		You can use any field that is supported by nvim_open_win() as configuration,
+		except 'relative', 'width', 'height', 'col', and 'row' (these are reserved by echodoc).
+
+		Default: {}
+
 b:echodoc_enabled					*b:echodoc_enabled*
 		If it is set to non-zero, echodoc is enabled in current
 		buffer.
