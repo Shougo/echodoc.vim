@@ -121,11 +121,13 @@ g:echodoc#type					*g:echodoc#type*
 
 		Default: "echo"
 
-g:echodoc#floating_config			*g:echodoc#type*
+g:echodoc#floating_config			*g:echodoc#floating_config*
 		The configuration dictionary for the floating window.
-		This does matter only if you set g:echodoc#type as "floating".
-		You can use any field that is supported by nvim_open_win() as configuration,
-		except 'relative', 'width', 'height', 'col', and 'row' (these are reserved by echodoc).
+		This does matter only if you set |g:echodoc#type| as
+		"floating".
+		You can use any field that is supported by |nvim_open_win()|
+		as configuration, except "relative", "width", "height", "col",
+		and "row" (these are reserved by echodoc).
 
 		Default: {}
 
@@ -137,12 +139,10 @@ b:echodoc_enabled					*b:echodoc_enabled*
 FUNCTIONS 					*echodoc-functions*
 
 echodoc#enable()				*echodoc#enable()*
-		Enables |echodoc|.  This is a function version of
-		|:EchoDocEnable|.
+		Enables |echodoc|.
 
 echodoc#disable()				*echodoc#disable()*
-		Disables |echodoc|.  This is a function version of
-		|:EchoDocDisable|.
+		Disables |echodoc|.
 
 echodoc#is_enabled()				*echodoc#is_enabled()*
 		Gets weather |echodoc| plugin is enabled.  This function
